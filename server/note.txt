@@ -1,0 +1,9 @@
+✅Protected routes are inaccessible even with authorization bearer
+✅Implement logout
+✅New access token generation logic not working (Check gemini)
+Check the flow of refesh token to access token: Mean, when the /refesh route is being hit. 
+Refresh Token rotation
+forgot password
+Rate limiting
+Email verification flow
+Protect routes implementation
