@@ -3,46 +3,49 @@ import argon2 from "argon2";
 
 const userSchema = new mongoose.Schema(
     {
-        username: {
+        name: {
             type: String,
-            required: true,
-            unique: true,
-            minlength: 3,
-            maxlength: 30,
-            trim: true,
+            required: [true, 'Name is required'],
+            trim: true
         },
         email: {
             type: String,
-            required: true,
-            unique: true,
-            lowercase: true,
+            required: [true, 'Email is required'],
+            unique: true, // This automatically creates a unique index
             trim: true,
-            match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
+            lowercase: true,
+            match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address'] // Basic email regex validation
         },
         password: {
             type: String,
-            required: true,
-            minlength: 8,
-            select: false, 
+            required: [true, 'Password is required'],
+            minlength: [6, 'Password should be at least 6 characters long']
+            // Note: Actual hashing should be done in a pre-save hook or controller
         },
-        roles: {
-            type: [String],
-            enum: ["user", "admin"],
-            default: ["user"],
+        phone: {
+            type: String,
+            default: ''
         },
-        isEmailVerified: {
+        company: {
+            type: String,
+            default: ''
+        },
+        role: {
+            type: String,
+            enum: {
+                values: ['client', 'admin'],
+                message: '{VALUE} is not a supported role'
+            },
+            default: 'client'
+        },
+        isActive: {
             type: Boolean,
-            default: false
-        },
-        refreshTokens: {
-            type: [String], 
-            defautl: []
-        },
-        resetPasswordToken: String,
-        resetPasswordExpire: Date,
-    },
-    { timestamps: true }
-);
+            default: true
+        }
+    }, {
+    // This option automatically manages createdAt and updatedAt fields
+    timestamps: true
+});
 
 /**
  * timestamps: true -
