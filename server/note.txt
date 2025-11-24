@@ -7,3 +7,6 @@ forgot password
 Rate limiting
 Email verification flow
 Protect routes implementation
+
+✅Test register flow
+👉🏻After login, page is not being redirected to home

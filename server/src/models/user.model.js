@@ -16,12 +16,6 @@ const userSchema = new mongoose.Schema(
             lowercase: true,
             match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address'] // Basic email regex validation
         },
-        password: {
-            type: String,
-            required: [true, 'Password is required'],
-            minlength: [6, 'Password should be at least 6 characters long']
-            // Note: Actual hashing should be done in a pre-save hook or controller
-        },
         phone: {
             type: String,
             default: ''
@@ -29,6 +23,12 @@ const userSchema = new mongoose.Schema(
         company: {
             type: String,
             default: ''
+        },
+        password: {
+            type: String,
+            required: [true, 'Password is required'],
+            minlength: [6, 'Password should be at least 6 characters long']
+            // Note: Actual hashing should be done in a pre-save hook or controller
         },
         role: {
             type: String,
