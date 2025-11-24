@@ -78,7 +78,7 @@ export const login = async (req, res) => {
 
         // Set authorization header
         // res.set({ 'authorization': `Bearer ${accessToken}` });
-
+        console.log(user);
         return res.status(200).json({
             message: "Login successful",
             // accessToken,
