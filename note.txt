@@ -1,7 +1,7 @@
 ✅Protected routes are inaccessible even with authorization bearer
 ✅Implement logout
 ✅New access token generation logic not working (Check gemini)
-Check the flow of refesh token to access token: Mean, when the /refesh route is being hit. 
+✅Check the flow of refesh token to access token: Mean, when the /refesh route is being hit. 
 Refresh Token rotation
 forgot password
 Rate limiting
@@ -13,4 +13,7 @@ Protect routes implementation
 ✅ Implement redux store
 ✅ Implement conditional rendering of '/' based on whether user is logged in or not.
 👉🏻 Consider implementing dark mode 
-👉🏻 Logout is being handled only from frontend. Handle it from backend. (Navbar.tsx)
+✅ Logout is being handled only from frontend. Handle it from backend. (Navbar.tsx)
+👉🏻 Implement form submission for quotes
+👉🏻 Design email reply flow for quotes
+👉🏻 Filters are not working for portfolio page on clinet.

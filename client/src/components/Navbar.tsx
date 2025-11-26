@@ -5,6 +5,7 @@ import { logout } from "../store/authSlice.ts";
 import type { RootState } from "../store/store.ts";
 import { Menu, X, Code2, User, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SolvifyLogo from "../components/home/logo.tsx";
 
 
 const Navbar = () => {
@@ -59,10 +60,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="p-2 rounded-lg gradient-primary bg-primary/10">
-              <Code2 className="h-6 w-6 text-primary" />
-            </div>
-            <span className="text-xl font-bold text-gradient">Solvify</span>
+            <SolvifyLogo className="w-48 h-auto mt-4" />
           </Link>
 
           {/* Desktop Navigation */}
