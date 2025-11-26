@@ -41,6 +41,10 @@ const userSchema = new mongoose.Schema(
         isActive: {
             type: Boolean,
             default: true
+        },
+        refreshTokens: {
+            type: [String],
+            default: []
         }
     }, {
     // This option automatically manages createdAt and updatedAt fields

@@ -10,6 +10,7 @@ Protect routes implementation
 
 ✅Test register flow
 ✅After login, page is not being redirected to home
-👉🏻 Implement redux store
-👉🏻 Implement conditional rendering of '/' based on whether user is logged in or not.
+✅ Implement redux store
+✅ Implement conditional rendering of '/' based on whether user is logged in or not.
 👉🏻 Consider implementing dark mode 
+👉🏻 Logout is being handled only from frontend. Handle it from backend. (Navbar.tsx)

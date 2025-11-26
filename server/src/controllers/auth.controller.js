@@ -58,30 +58,30 @@ export const login = async (req, res) => {
         }
 
         // Generate tokens
-        // const accessToken = generateAcessToken(user._id);
-        // const refeshToken = generateRefreshToken(user._id);
+        const accessToken = generateAcessToken(user._id);
+        const refeshToken = generateRefreshToken(user._id);
 
         // Hash the refresh token before saving
-        // const hashedRefreshToken = await hashify(refeshToken);
+        const hashedRefreshToken = await hashify(refeshToken);
 
         // we will implement hashing logic for refresh token
-        // user.refreshTokens.push(hashedRefreshToken);
-        // await user.save();
+        user.refreshTokens.push(hashedRefreshToken);
+        await user.save();
 
         // Send plain refresh token as HttpOnly Cookie, not the hashed one
-        // res.cookie("refreshToken", refeshToken, {
-        //     httpOnly: true,
-        //     secure: process.env.NODE_ENV === "production",
-        //     sameSite: "strict",
-        //     maxAge: 7 * 24 * 60 * 60 * 1000,  // 7 days in miliseconds
-        // });
+        res.cookie("refreshToken", refeshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,  // 7 days in miliseconds
+        });
 
         // Set authorization header
-        // res.set({ 'authorization': `Bearer ${accessToken}` });
+        res.set({ 'authorization': `Bearer ${accessToken}` });
         console.log(user);
         return res.status(200).json({
             message: "Login successful",
-            // accessToken,
+            accessToken,
             user: {
                 id: user._id,
                 name: user.name,
@@ -120,6 +120,7 @@ export const refreshToken = async (req, res, next) => {
 
         // verify refresh token
         const payload = verifyRefreshToken(refreshToken);
+        const userObj = await User.findById(payload.id)
 
 
         // issue new access token
