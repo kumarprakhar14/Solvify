@@ -31,11 +31,16 @@ const Navbar = () => {
   const isActive = (path: string) => location.pathname === path;
 
   // 2. Handle Logout
-  const handleLogout = () => {
+  const handleLogout = async () => {
     dispatch(logout());
-    setIsOpen(false);
-    setIsProfileOpen(false);
-    navigate("/"); // Redirect to home after logout
+    const res = await fetch('/api/auth/logout', {
+      method: 'POST'
+    });
+    if (res.ok) {
+      setIsOpen(false);
+      setIsProfileOpen(false);
+      navigate("/"); // Redirect to home after logout
+    }
   };
 
   // Close dropdown if clicking outside
