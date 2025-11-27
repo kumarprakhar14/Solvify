@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { router as productRoutes } from "./products.routes.js";
 import { router as authRoutes } from "./auth.routes.js"
 import { router as userRoutes } from "./user.routes.js"
 import { requireAuth } from "../middlewares/requireAuth.js";
@@ -17,7 +16,7 @@ router.use("/auth", authRoutes);
 
 // Protected rotues
 // Mount product routes
-router.use("/products", requireAuth, productRoutes);
+
 router.use("/user", requireAuth, userRoutes);
 
 export { router };
