@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { log } from "console";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -41,6 +42,16 @@ const Contact = () => {
       title: "Inquiry Submitted!",
       description: "We'll get back to you within 24 hours.",
     });
+
+    console.log(formData);
+    fetch("/api/user/inquiry", {
+      method: "POST", 
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(formData)
+    });
+    
 
     // Reset form
     setFormData({

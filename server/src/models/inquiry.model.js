@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Counter from "./counter.model.js"
 
 const inquirySchema = new mongoose.Schema({
     inquiryId: {
@@ -34,6 +35,9 @@ const inquirySchema = new mongoose.Schema({
     },
     serviceType: {
         type: String,
+        enum: {
+            values: ['web development', 'app development', 'data analytics', 'ai automation', 'ai integration']
+        },
         required: [true, 'Service type is required']
     },
     projectTitle: {
@@ -87,6 +91,36 @@ const inquirySchema = new mongoose.Schema({
     timestamps: true
 });
 
-const Inquiry = mongoose.model('Inquiry', inquirySchema);
+inquirySchema.pre('save', async function(next) {
+    if(this.inquiryId) return next();  // Avoid regenerating on update
 
-module.exports = Inquiry;
+    const year = new Date().getFullYear();
+
+    // Get the MongoDB document for the current year
+    //  It will have something like:- { id: "inquiry_2025", seq: 38 }
+
+    const counterId = `inquiry_${year}`;
+
+    // Fetch the counter and increase it automatically
+    const counter = await Counter.findOneAndUpdate(
+        { id: counterId },
+       { $inc: { seq: 1} },
+       { new: true, upsert: true}
+
+       // new: true -> Returns the updated document (after increment)
+       // upsert: true -> If the document doesn't exist (first inquiry of the year), create it automatically
+    );
+
+    // Convert counter number into 4-digit padded number 
+    // like: 1 -> 0001, 23 -> 0023
+    const padded = String(counter.seq).padStart(4, '0');
+
+    // Build the final inquiry ID
+    // like: INQ-2025-0001
+    this.inquiryId = `INQ-${year}-${padded}`;
+
+    next();
+});
+
+const Inquiry = mongoose.model('Inquiry', inquirySchema);
+export default Inquiry;

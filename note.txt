@@ -14,6 +14,7 @@ Protect routes implementation
 ✅ Implement conditional rendering of '/' based on whether user is logged in or not.
 👉🏻 Consider implementing dark mode 
 ✅ Logout is being handled only from frontend. Handle it from backend. (Navbar.tsx)
-👉🏻 Implement form submission for quotes
-👉🏻 Design email reply flow for quotes
+✅ Implement form submission for quotes
+👉🏻 Design email reply flow for quotes/inquiry
 👉🏻 Filters are not working for portfolio page on clinet.
+👉🏻 On inquiry submission -> server responds with 401- unauthorized
