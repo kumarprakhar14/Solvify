@@ -16,7 +16,7 @@
 👉🏻 Refresh Token rotation
 👉🏻 Forgot password
 👉🏻 Rate limiting
-👉🏻 Email verification flow
+⁉️ Email verification flow (Refer mailtrap doc)
 👉🏻 Protect routes implementation
 
 👉🏻 Custom id generation for inquiry not working.
