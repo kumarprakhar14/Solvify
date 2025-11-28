@@ -20,6 +20,6 @@
 👉🏻 Protect routes implementation
 
 👉🏻 Custom id generation for inquiry not working.
-👉🏻 Design email reply flow for quotes/inquiry
+⁉️ Design email reply flow for quotes/inquiry
 👉🏻 Filters are not working for portfolio page on clinet.
-👉🏻 Consider implementing dark mode 
+✅ Consider implementing dark mode 

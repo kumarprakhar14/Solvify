@@ -5,13 +5,16 @@ import { Provider } from "react-redux";
 import { store } from "./store/store.ts";
 import { fetchInterceptor } from "./lib/fetchInterceptor";
 import { AuthProvider } from "./components/AuthProvider";
+import { ThemeProvider } from "./theme/ThemeProvider";
 
 fetchInterceptor();
 
 createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
-        <AuthProvider>
-            <App />
-        </AuthProvider>
+        <ThemeProvider>
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </ThemeProvider>
     </Provider>
 );

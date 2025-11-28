@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { Code2, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import SolvifyLogo from "../components/Logo";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -11,10 +12,7 @@ const Footer = () => {
           {/* Company Info */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2">
-              <div className="p-2 rounded-lg gradient-primary">
-                <Code2 className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-lg font-bold text-gradient">Solvify</span>
+                <SolvifyLogo className="w-48 h-auto mt-4" />
             </Link>
             <p className="text-sm text-muted-foreground">
               Connecting businesses with expert IT service providers for digital transformation and innovation.

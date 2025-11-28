@@ -6,6 +6,18 @@
 All colors MUST be HSL.
 */
 
+:root {
+  --solvify-brand: #1F2937; /* light */
+  --solvify-tagline: #6B7280;
+}
+
+/* when app effective theme is dark (we add class 'dark' in provider) */
+html.dark {
+  --solvify-brand: #F9FAFB; /* dark-mode brand */
+  --solvify-tagline: #D1D5DB;
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;

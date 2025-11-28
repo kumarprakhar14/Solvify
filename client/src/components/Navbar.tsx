@@ -5,7 +5,8 @@ import { logout } from "../store/authSlice.ts";
 import type { RootState } from "../store/store.ts";
 import { Menu, X, Code2, User, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import SolvifyLogo from "../components/home/logo.tsx";
+import SolvifyLogo from "./Logo";
+import ThemeToggle from "./ThemeToggle";
 
 
 const Navbar = () => {
@@ -78,6 +79,7 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-4">
+            <ThemeToggle />
             {/* 3. Conditional Rendering Logic */}
             {!isAuthenticated ? (
               <>
@@ -134,14 +136,17 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2 text-foreground"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+          {/* Mobile Menu Button and Theme Toggle */}
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              className="p-2 text-foreground"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
