@@ -23,3 +23,4 @@
 ⁉️ Design email reply flow for quotes/inquiry
 👉🏻 Filters are not working for portfolio page on clinet.
 ✅ Consider implementing dark mode 
+👉🏻 Create Inngest flow for email notifications
