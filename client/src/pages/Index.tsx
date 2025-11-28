@@ -11,27 +11,6 @@ import { useDispatch } from "react-redux";
 import { login, setStatus } from "../store/authSlice"
 
 const Index = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    const initAuth = async () => {
-      try {
-        const res = await fetch('/api/auth/refresh', {
-          method: 'POST',
-          credentials: 'include'  // sends cookies
-        });
-
-        if (!res.ok) throw new Error("Not authenticated");
-
-        const data = await res.json();
-        dispatch(login({ user: data.user, accessToken: data.accessToken}));
-        dispatch(setStatus("authenticated"));
-
-      } catch (error) {
-        console.log("An error occured: ", error);
-      }
-    }
-    initAuth();
-  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">

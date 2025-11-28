@@ -24,7 +24,7 @@ const Contact = () => {
     timeline: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
@@ -38,19 +38,23 @@ const Contact = () => {
     }
 
     // Here you would typically send the data to your backend
-    toast({
-      title: "Inquiry Submitted!",
-      description: "We'll get back to you within 24 hours.",
-    });
-
-    console.log(formData);
-    fetch("/api/user/inquiry", {
+    const response = await fetch("/api/user/inquiry", {
       method: "POST", 
       headers: {
         "content-type": "application/json"
       },
       body: JSON.stringify(formData)
     });
+    
+    if (response.ok) {
+    toast({
+      title: "Inquiry Submitted!",
+      description: "We'll get back to you within 24 hours.",
+    });
+  }
+
+    console.log(formData);
+    
     
 
     // Reset form

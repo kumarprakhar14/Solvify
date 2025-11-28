@@ -33,11 +33,11 @@ const inquirySchema = new mongoose.Schema({
         type: String,
         default: ''
     },
-    serviceType: {
+    service: {
         type: String,
-        enum: {
-            values: ['web development', 'app development', 'data analytics', 'ai automation', 'ai integration']
-        },
+        // enum: {
+        //     values: ['web development', 'app development', 'data analytics', 'ai automation', 'ai integration']
+        // },
         required: [true, 'Service type is required']
     },
     projectTitle: {
@@ -45,11 +45,11 @@ const inquirySchema = new mongoose.Schema({
         required: [true, 'Project title is required'],
         trim: true
     },
-    projectDescription: {
+    description: {
         type: String,
         required: [true, 'Project description is required']
     },
-    budgetRange: {
+    budget: {
         type: String,
         required: [true, 'Budget range is required']
     },

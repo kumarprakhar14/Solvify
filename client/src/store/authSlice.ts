@@ -19,10 +19,12 @@ const authSlice = createSlice({
         login: (state, action) => {
             state.status = "authenticated";
             state.user = action.payload.user;
+            state.accessToken = action.payload.accessToken;
         },
         logout: (state) => {
             state.status = "idle";
             state.user = null;
+            state.accessToken = null;
         },
         setStatus: (state, action) => {
           state.status = action.payload;

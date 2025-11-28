@@ -8,6 +8,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Code2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login, setStatus } from "../store/authSlice";
 
 
 const Login = () => {
@@ -18,6 +20,7 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,8 +63,17 @@ const Login = () => {
 
       // success!
       if (response.status === 200) {
+        dispatch(login({ user: data.user, accessToken: data.accessToken}));
+        dispatch(setStatus("authenticated"));
         navigate('/');
       }
+
+      // clear form
+      setFormData({
+        email: "",
+        password: "",
+        remember: false,
+      });
     } catch (error) {
       console.error("Registration failed:", error);
       toast({

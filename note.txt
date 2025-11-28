@@ -2,22 +2,24 @@
 ✅Implement logout
 ✅New access token generation logic not working (Check gemini)
 ✅Check the flow of refesh token to access token: Mean, when the /refesh route is being hit. 
-Refresh Token rotation
-forgot password
-Rate limiting
-Email verification flow
-Protect routes implementation
 
 ✅Test register flow
 ✅After login, page is not being redirected to home
 ✅ Implement redux store
 ✅ Implement conditional rendering of '/' based on whether user is logged in or not.
-👉🏻 Consider implementing dark mode 
 ✅ Logout is being handled only from frontend. Handle it from backend. (Navbar.tsx)
 ✅ Implement form submission for quotes
+✅On inquiry submission -> server responds with 401- unauthorized
+✅Auto-login (refresh token) not working on all pages.
+✅ Attach access token to authorization header from frontend only and use an interceptor to attach it for every request.
+
+👉🏻 Refresh Token rotation
+👉🏻 Forgot password
+👉🏻 Rate limiting
+👉🏻 Email verification flow
+👉🏻 Protect routes implementation
+
+👉🏻 Custom id generation for inquiry not working.
 👉🏻 Design email reply flow for quotes/inquiry
 👉🏻 Filters are not working for portfolio page on clinet.
-👉🏻 On inquiry submission -> server responds with 401- unauthorized
-👉🏻 Auto-login (refresh token) not working on all pages.
-
-⚠️ Attach access token to authorization header from frontend only and use an interceptor to attach it for every request.
+👉🏻 Consider implementing dark mode 

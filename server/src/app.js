@@ -25,7 +25,7 @@ app.get("/health", (req, res) => {
 });
 
 // Apply globally -> every request will check for a token if present
-app.use(deserializeUser);
+// app.use(deserializeUser);
 
 // API routes
 app.use("/api", apiRouter);

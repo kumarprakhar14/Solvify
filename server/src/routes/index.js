@@ -17,6 +17,6 @@ router.use("/auth", authRoutes);
 // Protected rotues
 // Mount product routes
 
-router.use("/user", requireAuth, userRoutes);
+router.use("/user", userRoutes);
 
 export { router };
