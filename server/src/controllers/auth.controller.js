@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import { hashify, verifyHash } from "../utils/crypto.js";
 import { generateAcessToken, generateRefreshToken, verifyRefreshToken } from "../services/auth.service.js";
 import mongoose from "mongoose";
+import { inngest } from "../inngest/index.js";
 
 // @desc Register new user
 // @route POST /api/auth/register
@@ -10,9 +11,7 @@ export const register = async (req, res) => {
         const { name, email, phone, company, password } = req.body;
 
         //check if user exists -> checking for unique email as well as unique username
-        const existingUser = await User.findOne({
-            $or: [{ email }, { name }]
-        });
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: "User already exists" })
         }
@@ -20,6 +19,14 @@ export const register = async (req, res) => {
         // create user (password gets hashed by pre-save hook)
         const user = new User({ name, email, phone, company, password });
         await user.save();
+
+        // Fire inngest event
+        await inngest.send({
+            name: "user/signup",
+            data: {
+                email,
+            },
+        });
 
         return res.status(201).json({
             message: "User registerd successfully",

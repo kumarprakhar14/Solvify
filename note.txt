@@ -17,10 +17,12 @@
 👉🏻 Forgot password
 👉🏻 Rate limiting
 ⁉️ Email verification flow (Refer mailtrap doc)
-👉🏻 Protect routes implementation
+👉🏻 Protect routes implementation (Client side)
 
 👉🏻 Custom id generation for inquiry not working.
-⁉️ Design email reply flow for quotes/inquiry
+👉🏻 Design email reply flow for quotes/inquiry
 👉🏻 Filters are not working for portfolio page on clinet.
 ✅ Consider implementing dark mode 
-👉🏻 Create Inngest flow for email notifications
+✅ Create Inngest flow for email notifications
+
+⁉️ Emails are sent to sandbox even when configured for actual smtp.

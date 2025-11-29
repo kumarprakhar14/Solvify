@@ -4,7 +4,10 @@ import helmet from "helmet";
 import morgan from "morgan"; // for request logging
 import cookieParser from "cookie-parser";
 import { router as apiRouter } from "./routes/index.js";
-import { deserializeUser } from "./middlewares/deserializeuser.js"
+import { serve } from "inngest/express"
+import { inngest } from "./inngest/index.js"
+import { helloWorld } from "./inngest/functions/helloWorld.js"
+import { onUserSignup } from "./inngest/functions/on-signup.js"
 
 const app = express();
 
@@ -18,10 +21,29 @@ app.use(express.json());  // parse JSON body
 app.use(express.urlencoded({ extended: true }));  // parse from data
 app.use(morgan("dev"));  // logs requests (GET /api 200 - 15ms)
 
+// Set up the "/api/inngest" routes with the serve handler
+app.use("/api/inngest", serve({
+    client: inngest,
+    functions: [helloWorld, onUserSignup]
+  })
+);
+
 // Healt check route
 // Basically, checks if the API(app) is up and running.
 app.get("/health", (req, res) => {
     res.json({ status: "ok", message: "API is healty" });
+});
+
+// Inngest test route
+// Create a new route
+app.get("/api/hello", async function (req, res, next) {
+  await inngest.send({
+    name: "test/hello.world",
+    data: {
+      email: "testUser@example.com",
+    },
+  }).catch(err => next(err));
+  res.json({ message: 'Event sent!' });
 });
 
 // Apply globally -> every request will check for a token if present
