@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Code2 } from "lucide-react";
+import SolvifyLogo from "../components/Logo";
 import { toast } from "@/hooks/use-toast";
 
 const Register = () => {
@@ -96,10 +96,7 @@ const Register = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-4 py-12">
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <div className="p-2 rounded-lg gradient-primary">
-            <Code2 className="h-6 w-6 text-white" />
-          </div>
-          <span className="text-2xl font-bold text-gradient">Solvify</span>
+          <SolvifyLogo className="w-48 h-auto mt-4" />
         </Link>
 
         <Card className="gradient-card border-border">

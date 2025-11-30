@@ -31,3 +31,18 @@ export const generateResetToken = () => {
         throw new Error("Error generating reset token: " + error.message);
     }
 }
+// argon2 is not-deterministic -> uses random salt every time
+// so, same text hashed on different times will give different results
+// thus, it can't be used for reset tokens
+
+// Hash reset token using SHA-256 (deterministic)
+// Use this for reset tokens, NOT argon2, because we need to be able to 
+// hash the same token again and get the same result for comparison
+
+export const hashResetToken = (token) => {
+    try {
+        return crypto.createHash("sha256").update(token).digest("hex");
+    } catch (error) {
+        throw new Error("Error hashing reset token: " + error.message);
+    }
+}

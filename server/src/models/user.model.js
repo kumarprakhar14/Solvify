@@ -98,7 +98,7 @@ userSchema.pre("save", async function (next) {
 /**
  * userSchema.methods - 
  * - Mongoose allows us to create instance methods on a schema
- * - These instance are available for every document create from that schema
+ * - These instance are available for every document created from that schema
  * 
  * We can define 2 types of methods on a mongoose schema:-
  * 1. Instance Methods(schema.methods) -> act on a document (e.g., user.comparePassword()).

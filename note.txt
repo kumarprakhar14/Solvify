@@ -14,7 +14,7 @@
 ✅ Attach access token to authorization header from frontend only and use an interceptor to attach it for every request.
 
 👉🏻 Refresh Token rotation
-👉🏻 Forgot password
+✅ Forgot password
 👉🏻 Rate limiting
 ⁉️ Email verification flow (Refer mailtrap doc)
 👉🏻 Protect routes implementation (Client side)
@@ -32,4 +32,10 @@
 ⁉️ Implement google oauth
 
 👉🏻 Implement inngest function for forgot password
-👉🏻 Consider implementing get request for forgot password
+✅ Consider implementing get request for forgot password
+
+⚠️ Deploy
+
+// Later on ->
+👉🏻 Implement an admin dashboard
+👉🏻 Implement user -> update profile functionality

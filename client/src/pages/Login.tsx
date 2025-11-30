@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login, setStatus } from "../store/authSlice";
-
+import SolvifyLogo from "../components/Logo"
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -88,10 +88,7 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-hero p-4">
       <div className="w-full max-w-md">
         <Link to="/" className="flex items-center justify-center gap-2 mb-8">
-          <div className="p-2 rounded-lg gradient-primary">
-            <Code2 className="h-6 w-6 text-white" />
-          </div>
-          <span className="text-2xl font-bold text-gradient">Solvify</span>
+          <SolvifyLogo className="w-48 h-auto mt-4" />
         </Link>
 
         <Card className="gradient-card border-border">
