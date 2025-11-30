@@ -30,3 +30,6 @@
 
 👉🏻 Company logo not visible in email
 ⁉️ Implement google oauth
+
+👉🏻 Implement inngest function for forgot password
+👉🏻 Consider implementing get request for forgot password

@@ -45,6 +45,15 @@ const userSchema = new mongoose.Schema(
         refreshTokens: {
             type: [String],
             default: []
+        },
+        // password reset fields
+        resetPasswordToken: {
+            type: String,
+            default: null
+        },
+        resetPasswordExpiresAt: {
+            type: Date,
+            default: null
         }
     }, {
     // This option automatically manages createdAt and updatedAt fields

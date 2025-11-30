@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import { hashify, verifyHash } from "../utils/crypto.js";
+import { hashify, verifyHash, generateResetToken } from "../utils/crypto.js";
 import { generateAcessToken, generateRefreshToken, verifyRefreshToken } from "../services/auth.service.js";
 import mongoose from "mongoose";
 import { inngest } from "../inngest/index.js";
@@ -147,5 +147,49 @@ export const refreshToken = async (req, res, next) => {
         });
     } catch (err) {
         next(err);
+    }
+}
+
+
+// @desc Forgot Password
+// @route /api/auth/forgot-password
+export const forgotPassword = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        // find user by email
+        const user = await User.findOne({ email });
+
+        if(!user) {
+            // Don't rever if user exists or not
+            return res.status(200).json({
+                message: "If an account exists, a reset link has been sent to your email."
+            });
+        }
+
+        // Generate reset token
+        const resetToken = generateResetToken();
+
+        // Hash the reset token before saving to db
+        const hashedToken = await hashify(resetToken);
+
+        // save the hashed token and expiry to db
+        user.resetPasswordToken = hashedToken;
+        user.resetPasswordExpiresAt = Date.now() + 60*60*1000;  // 1 hour (in milliseconds)
+        await user.save();
+
+        // create reset url with unhashed token
+        const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+        // fire inngest event to send mail
+
+        res.status(200).json({
+            message: "If an account exists, a reset link has been sent to your email."
+        });
+
+    } catch (error) {
+        console.error("Forgot password error: ", error);
+        res.status(500).json({ message: "Server error"})
+        
     }
 }
