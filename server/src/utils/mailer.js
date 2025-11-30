@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 
-export const sendMail = async (to, subject, text) => {
+export const sendMail = async (to, subject, message) => {
   try {
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
@@ -16,7 +16,7 @@ export const sendMail = async (to, subject, text) => {
       from: 'Solvify <solvify@unique-deals.in>',
       to,
       subject,
-      text,
+      html: message,
     });
 
     console.log("Message sent:", info.messageId);

@@ -2,6 +2,7 @@ import { inngest} from "../index.js";
 import User from "../../models/user.model.js";
 import { NonRetriableError } from "inngest";
 import { sendMail } from "../../utils/mailer.js"
+import { getWelcomeEmailTemplate } from "../../utils/mails/welcomeEmail.js"
 
 export const onUserSignup = inngest.createFunction(
     { id: "on-user-signup", retries: 2 },
@@ -19,10 +20,7 @@ export const onUserSignup = inngest.createFunction(
 
             await step.run("send-welcome-email", async () => {
                 const subject = `Welcome to Solvify`;
-                const message = `Hii ${user.name},
-                \n\n
-                Thanks for signing up to Solvify. We're glad to have you onboard.
-                `;
+                const message = getWelcomeEmailTemplate(user.name, user.email);
                 await sendMail(user.email, subject, message);
             });
 
