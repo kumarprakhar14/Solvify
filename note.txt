@@ -25,4 +25,5 @@
 ✅ Consider implementing dark mode 
 ✅ Create Inngest flow for email notifications
 
-⁉️ Emails are sent to sandbox even when configured for actual smtp.
+✅ Emails are sent to sandbox even when configured for actual smtp.
+👉🏻 Create html templates for emails (Check claude)
