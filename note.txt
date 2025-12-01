@@ -16,11 +16,11 @@
 👉🏻 Refresh Token rotation
 ✅ Forgot password
 👉🏻 Rate limiting
-⁉️ Email verification flow (Refer mailtrap doc)
+⁉️ Email verification flow
 👉🏻 Protect routes implementation (Client side)
 
 👉🏻 Custom id generation for inquiry not working.
-👉🏻 Design email reply flow for quotes/inquiry
+✅ Design email reply flow for quotes/inquiry
 👉🏻 Filters are not working for portfolio page on clinet.
 ✅ Consider implementing dark mode 
 ✅ Create Inngest flow for email notifications
@@ -34,10 +34,11 @@
 👉🏻 Implement inngest function for forgot password
 ✅ Consider implementing get request for forgot password
 
-👉🏻 Retrieve inquiry object from controller for inngest event
+✅ Retrieve inquiry object from controller for inngest event
 
 ⚠️ Deploy
 
 // Later on ->
 👉🏻 Implement an admin dashboard
 👉🏻 Implement user -> update profile functionality
+👉🏻 Design email flow for updates on inquiry status -> design after admin panel

@@ -184,6 +184,13 @@ export const forgotPassword = async (req, res, next) => {
 
 
         // fire inngest event to send mail
+        await inngest.send({
+            name: "user/forgot-password",
+            data: {
+                email,
+                url: resetUrl
+            },
+        });
 
         res.status(200).json({
             message: "If an account exists, a reset link has been sent to your email."
@@ -192,6 +199,47 @@ export const forgotPassword = async (req, res, next) => {
     } catch (error) {
         console.error("Forgot password error: ", error);
         res.status(500).json({ message: "Server error" })
+
+    }
+}
+
+
+// @desc Validate reset token (or, reset URL) -> get request
+// @route GET /api/auth/validate-reset-token/:token
+export const validateResetToken = async (req, res, next) => {
+    try {
+        const { token } = req.params;
+        console.log("Token: ", token);
+
+
+        // Hash the token from url to compare with stored hash
+        const hashedToken = hashResetToken(token);
+        console.log("Hashed Token: ", hashedToken);
+
+
+        // Find user with valid token and not expired
+        const user = await User.findOne({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpiresAt: { $gt: Date.now() }
+        });
+        console.log("User: ", user);
+
+        if (!user) {
+            return res.status(400).json({
+                valid: false,
+                message: "Invalid or expired reset url"
+            });
+        }
+
+        // Token is valid
+        res.status(200).json({
+            valid: true,
+            message: "Token is valid",
+            email: user.email  // Send email to client pre-filled
+        })
+    } catch (error) {
+        console.error("Validate reset token error: ", error);
+        res.status(500).json({ message: "Server error" });
 
     }
 }
@@ -232,6 +280,12 @@ export const resetPassword = async (req, res, next) => {
 
         // Send confirmation mail
         // Fire inngest event
+        await inngest.send({
+            name: "user/password-change",
+            data: {
+                email,
+            },
+        });
 
         res.status(200).json({
             message: "Password reset successful. You can now login with your new password."
@@ -241,47 +295,6 @@ export const resetPassword = async (req, res, next) => {
         console.error("Reset password error: ", error);
         res.status(500).json({ message: "Server error" });
 
-
-    }
-}
-
-
-// @desc Validate reset token -> get request
-// @route GET /api/auth/validate-reset-token/:token
-export const validateResetToken = async (req, res, next) => {
-    try {
-        const { token } = req.params;
-        console.log("Token: ", token);
-
-
-        // Hash the token from url to compare with stored hash
-        const hashedToken = hashResetToken(token);
-        console.log("Hashed Token: ", hashedToken);
-
-
-        // Find user with valid token and not expired
-        const user = await User.findOne({
-            resetPasswordToken: hashedToken,
-            resetPasswordExpiresAt: { $gt: Date.now() }
-        });
-        console.log("User: ", user);
-
-        if (!user) {
-            return res.status(400).json({
-                valid: false,
-                message: "Invalid or expired reset url"
-            });
-        }
-
-        // Token is valid
-        res.status(200).json({
-            valid: true,
-            message: "Token is valid",
-            email: user.email  // Send email to client pre-filled
-        })
-    } catch (error) {
-        console.error("Validate reset token error: ", error);
-        res.status(500).json({ message: "Server error" });
 
     }
 }

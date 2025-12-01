@@ -4,7 +4,7 @@ import { inngest } from "../index.js";
 import User from "../../models/user.model.js";
 import { NonRetriableError } from "inngest";
 import { sendMail } from "../../utils/mailer.js"
-import { getWelcomeEmailTemplate } from "../../utils/mails/welcomeEmail.js"
+import { getPasswordChangeEmailTemplate } from "../../utils/mails/passwordChangeEmail.js"
 
 
 export const onUserPasswordChange = inngest.createFunction(
@@ -23,12 +23,13 @@ export const onUserPasswordChange = inngest.createFunction(
             });
 
             // change updateAt time to ist
-            await step.run("convert-time-to-IST", async () => {
-                const updateAt = new Intl.DateTimeFormat("en-IN", {
+            const updatedAt = await step.run("convert-time-to-IST", async () => {
+                const updatedAt = new Intl.DateTimeFormat("en-IN", {
                     dateStyle: "full",
                     timeStyle: "long",
                     timeZone: "Asia/Kolkata",
-                }).format(user.updatedAt);
+                }).format(new Date(user.updatedAt));
+                return updatedAt;
             });
 
 
@@ -36,7 +37,7 @@ export const onUserPasswordChange = inngest.createFunction(
             // // send email
             await step.run("send-password-chanage-email", async () => {
                 const subject = `Your password has been changed`;
-                const message = getPasswordChangeEmailTemplate(user.name, user.email, updateAt);
+                const message = getPasswordChangeEmailTemplate(user.name, user.email, updatedAt);
                 await sendMail(user.email, subject, message);
             });
 
