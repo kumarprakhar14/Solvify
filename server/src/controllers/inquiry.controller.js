@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import Inquiry from "../models/inquiry.model.js";
+import { inngest } from "../inngest/index.js";
 
 // @desc Create new inquiry
 // @route POST /api/inquiry
@@ -30,6 +31,14 @@ export const createInquiry = async (req, res) => {
         });
 
         await inquiry.save();
+
+        // Fire inngest event
+        await inngest.send({
+            name: "inquiry/submit",
+            data: {
+                inquiry,
+            },
+        });
 
         return res.status(201).json({
             message: "Inquiry created successfully",

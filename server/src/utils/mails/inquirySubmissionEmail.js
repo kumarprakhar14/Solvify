@@ -1,3 +1,5 @@
+export const getInquirySubmissionEmailTemplate = (userName, userEmail, inquirySubject, submissionTime) => {
+    return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,3 +167,5 @@
     </table>
 </body>
 </html>
+  `;
+};

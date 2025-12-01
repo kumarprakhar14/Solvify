@@ -8,6 +8,9 @@ import { serve } from "inngest/express"
 import { inngest } from "./inngest/index.js"
 import { helloWorld } from "./inngest/functions/helloWorld.js"
 import { onUserSignup } from "./inngest/functions/on-signup.js"
+import { onUserForgotPassword } from "./inngest/functions/on-forgot-password.js"
+import { onUserPasswordChange } from "./inngest/functions/on-password-change.js";
+import { onInquirySubmission } from "./inngest/functions/on-inquiry-submission.js";
 
 const app = express();
 
@@ -24,7 +27,7 @@ app.use(morgan("dev"));  // logs requests (GET /api 200 - 15ms)
 // Set up the "/api/inngest" routes with the serve handler
 app.use("/api/inngest", serve({
     client: inngest,
-    functions: [helloWorld, onUserSignup]
+    functions: [helloWorld, onUserSignup, onUserForgotPassword, onUserPasswordChange, onInquirySubmission]
   })
 );
 

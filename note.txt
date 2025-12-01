@@ -34,6 +34,8 @@
 👉🏻 Implement inngest function for forgot password
 ✅ Consider implementing get request for forgot password
 
+👉🏻 Retrieve inquiry object from controller for inngest event
+
 ⚠️ Deploy
 
 // Later on ->
