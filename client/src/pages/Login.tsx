@@ -10,7 +10,8 @@ import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login, setStatus } from "../store/authSlice";
-import SolvifyLogo from "../components/Logo"
+import SolvifyLogo from "../components/Logo";
+import { GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -63,7 +64,7 @@ const Login = () => {
 
       // success!
       if (response.status === 200) {
-        dispatch(login({ user: data.user, accessToken: data.accessToken}));
+        dispatch(login({ user: data.user, accessToken: data.accessToken }));
         dispatch(setStatus("authenticated"));
         navigate('/');
       }
@@ -143,6 +144,19 @@ const Login = () => {
               <Button type="submit" variant="hero" size="lg" className="w-full">
                 Sign In
               </Button>
+
+              <GoogleLogin
+                theme="outline"
+                shape="pill"
+                logo_alignment="center"
+                width={300}
+                onSuccess={credentialResponse => {
+                  alert("Sign in with Google");
+                }}
+                onError={() => {
+                  alert("Login Failed");
+                }}
+              />
 
               <div className="text-center text-sm text-muted-foreground">
                 Don't have an account?{" "}
