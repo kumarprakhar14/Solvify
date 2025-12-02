@@ -16,7 +16,7 @@ export const getForgotPasswordEmailTemplate = (userName, userEmail, resetUrl) =>
                     <!-- Header with Logo -->
                     <tr>
                         <td style="padding: 15px 10px; text-align: center; background: #030816;">
-                            <img src="https://res.cloudinary.com/dkjxsipsx/image/upload/v1764498260/logo_primary_m86zbl.svg" alt="Company Logo" style="width: 300px; height: auto;">
+                            <img src="https://res.cloudinary.com/dkjxsipsx/image/upload/v1764654587/svgviewer-png-output_2_ouinht_larx8k.png" alt="Company Logo" style="width: 300px; height: auto;">
                         </td>
                     </tr>
                     

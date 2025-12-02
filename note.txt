@@ -28,10 +28,10 @@
 ✅ Emails are sent to sandbox even when configured for actual smtp.
 ✅ Create html templates for emails (Check claude)
 
-👉🏻 Company logo not visible in email
+✅ Company logo not visible in email (Most email servers don't support svg)
 ⁉️ Implement google oauth
 
-👉🏻 Implement inngest function for forgot password
+✅ Implement inngest function for forgot password
 ✅ Consider implementing get request for forgot password
 
 ✅ Retrieve inquiry object from controller for inngest event
