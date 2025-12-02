@@ -42,3 +42,5 @@
 👉🏻 Implement an admin dashboard
 👉🏻 Implement user -> update profile functionality
 👉🏻 Design email flow for updates on inquiry status -> design after admin panel
+
+⁉️ Refer Login.tsx for google oauth implementation

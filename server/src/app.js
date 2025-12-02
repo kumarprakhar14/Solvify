@@ -3,6 +3,9 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan"; // for request logging
 import cookieParser from "cookie-parser";
+import cookieSession from "cookie-session";
+import passport from "passport";
+import "./services/passport.js";
 import { router as apiRouter } from "./routes/index.js";
 import { serve } from "inngest/express"
 import { inngest } from "./inngest/index.js"
@@ -17,24 +20,34 @@ const app = express();
 // Middleware
 app.use(helmet());  // security headers
 app.use(cors({
-    origin: 'http://localhost:5173'
+  origin: 'http://localhost:5173'
 }));
 app.use(cookieParser());
 app.use(express.json());  // parse JSON body
 app.use(express.urlencoded({ extended: true }));  // parse from data
 app.use(morgan("dev"));  // logs requests (GET /api 200 - 15ms)
 
+app.use(
+  cookieSession({
+    maxAge: 30 * 24 * 60 * 60 * 1000,  // 30 days
+    keys: [process.env.COOKIE_KEY]
+  })
+)
+
+app.use(passport.initialize());
+app.use(passport.session())
+
 // Set up the "/api/inngest" routes with the serve handler
 app.use("/api/inngest", serve({
-    client: inngest,
-    functions: [helloWorld, onUserSignup, onUserForgotPassword, onUserPasswordChange, onInquirySubmission]
-  })
+  client: inngest,
+  functions: [helloWorld, onUserSignup, onUserForgotPassword, onUserPasswordChange, onInquirySubmission]
+})
 );
 
 // Healt check route
 // Basically, checks if the API(app) is up and running.
 app.get("/health", (req, res) => {
-    res.json({ status: "ok", message: "API is healty" });
+  res.json({ status: "ok", message: "API is healty" });
 });
 
 // Inngest test route
@@ -57,11 +70,11 @@ app.use("/api", apiRouter);
 
 // Global error handler
 app.use((err, req, res, next) => {
-    console.error("Error handler:", err);
-    res.status(err.status || 500).json({
-        success: false,
-        message: err.message || "Internal Server Error"
-    });
+  console.error("Error handler:", err);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal Server Error"
+  });
 });
 
 export { app };
