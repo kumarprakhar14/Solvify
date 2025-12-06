@@ -16,7 +16,12 @@ router.get('/validate-reset-token/:token', validateResetToken);
 
 // Google OAuth routes
 router.get('/google', passport.authenticate('google', {
-    scope: ['profile', 'email']
+    scope: ['openid','profile', 'email']
+}, () => {
+    console.log("openid\n", openid);
+    console.log("profile\n", profile);
+    console.log("email\n", email);
+    
 }));
 
 router.get('/google/callback', passport.authenticate('google'), (req, res) => {
