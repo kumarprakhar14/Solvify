@@ -1,5 +1,5 @@
 import express from "express";
-import { login, logout, refreshToken, register, forgotPassword, resetPassword, validateResetToken } from "../controllers/auth.controller.js";
+import { login, logout, refreshToken, register, forgotPassword, resetPassword, validateResetToken, googleLogin } from "../controllers/auth.controller.js";
 import passport from "passport";
 
 const router = express.Router();
@@ -15,17 +15,6 @@ router.post("/reset-password/:token", resetPassword);
 router.get('/validate-reset-token/:token', validateResetToken);
 
 // Google OAuth routes
-router.get('/google', passport.authenticate('google', {
-    scope: ['openid','profile', 'email']
-}, () => {
-    console.log("openid\n", openid);
-    console.log("profile\n", profile);
-    console.log("email\n", email);
-    
-}));
-
-router.get('/google/callback', passport.authenticate('google'), (req, res) => {
-    res.redirect(process.env.FRONTEND_URL || 'http://localhost:5173'); // Redirect to frontend after login
-});
+router.get('/google', googleLogin);
 
 export { router };

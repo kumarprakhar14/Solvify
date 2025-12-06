@@ -29,7 +29,7 @@
 ✅ Create html templates for emails (Check claude)
 
 ✅ Company logo not visible in email (Most email servers don't support svg)
-⁉️ Implement google oauth
+✅ Implement google oauth
 
 ✅ Implement inngest function for forgot password
 ✅ Consider implementing get request for forgot password
@@ -43,4 +43,6 @@
 👉🏻 Implement user -> update profile functionality
 👉🏻 Design email flow for updates on inquiry status -> design after admin panel
 
-⁉️ Refer Login.tsx for google oauth implementation
+✅ Refer Login.tsx for google oauth implementation
+👉🏻 Create update profile flow when user logs in using google
+👉🏻 Read about inngest deployment

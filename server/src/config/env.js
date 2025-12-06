@@ -26,7 +26,14 @@ export const config = {
         from: requireEnv("EMAIL_FROM"),
         host: requireEnv("SMTP_HOST"),
         port: requireEnv("SMTP_PORT"),
-        user: requireEnv("SMTP_PORT"),
+        user: requireEnv("SMTP_USER"),
         pass: requireEnv("SMTP_PASS"),
     },
+
+    google: {
+        clientId: requireEnv("GOOGLE_CLIENT_ID"),
+        clientSecret: requireEnv("GOOGLE_CLIENT_SECRET"),
+    },
+
+    redirectUrl: requireEnv("REDIRECT_URL", "http://localhost:3000"),
 };

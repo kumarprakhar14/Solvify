@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { verifyAccessToken } from "../services/auth.service.js";
 import User from "../models/user.model.js";
 
-// This middleware verifies the JWT and attaches the user payload to req.user
+// This middleware verifies the access token and attaches the user payload to req.user
 // This middleware does not force login
 // If user is logged in, it simply attaces the user to the payload
 // It will run for all the routes.

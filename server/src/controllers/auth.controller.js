@@ -2,7 +2,9 @@ import User from "../models/user.model.js";
 import { hashify, verifyHash, generateResetToken, hashResetToken } from "../utils/crypto.js";
 import { generateAcessToken, generateRefreshToken, verifyRefreshToken } from "../services/auth.service.js";
 import mongoose from "mongoose";
+import axios from "axios";
 import { inngest } from "../inngest/index.js";
+import { googleClient } from "../utils/googleClient.js"
 
 // @desc Register new user
 // @route POST /api/auth/register
@@ -111,6 +113,83 @@ export const logout = async (req, res, next) => {
     } catch (err) {
         console.error("Logout Error", err);
         res.status(500).json({ message: "Server Error" });
+    }
+}
+
+export const googleLogin = async (req, res) => {
+    try {
+        const code = req.query.code;
+        if (!code) {
+            return res.status(400).json({ message: "Code is required" });
+        }
+
+        // Exchange code for tokens
+        const { tokens } = await googleClient.getToken({
+            code,
+            redirect_uri: process.env.REDIRECT_URL,
+        });
+        googleClient.setCredentials(tokens);
+
+        // Use access token to get user profile
+        const userRes = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+            headers: {
+                Authorization: `Bearer ${tokens.access_token}`,
+            },
+        });
+
+        const { email, name, picture } = userRes.data;
+
+        // Find or create user in db
+        let user = await User.findOne({ email });
+        if (!user) {
+            // new user -> create user
+            user = await User.create({ email, name, image: picture });
+
+            // Fire inngest event
+            await inngest.send({
+                name: "user/signup",
+                data: {
+                    email,
+                },
+            });
+        }
+
+        // Generate tokens
+        const accessToken = generateAcessToken(user._id);
+        const refeshToken = generateRefreshToken(user._id);
+
+        // Hash the refresh token before saving
+        const hashedRefreshToken = await hashify(refeshToken);
+
+        // we will implement hashing logic for refresh token
+        user.refreshTokens.push(hashedRefreshToken);
+        await user.save();
+
+        // Send plain refresh token as HttpOnly Cookie, not the hashed one
+        res.cookie("refreshToken", refeshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,  // 7 days in miliseconds
+        });
+
+        // Set authorization header
+        await res.set({ 'authorization': `Bearer ${accessToken}` });
+
+        return res.status(200).json({
+            message: "success",
+            accessToken,
+            userInfo: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                image: user.image,
+            }
+        })
+
+    } catch (error) {
+        console.error("Google Login Error", error);
+        return res.status(500).json({ message: "Server Error" });
     }
 }
 

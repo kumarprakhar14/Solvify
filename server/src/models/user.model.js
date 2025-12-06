@@ -26,13 +26,8 @@ const userSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            // required: [true, 'Password is required'], // Made optional for OAuth users
+            // required: [true, 'Password is required'], // Made optional for OAuth users or make it conditionally required
             minlength: [6, 'Password should be at least 6 characters long']
-        },
-        googleId: {
-            type: String,
-            unique: true,
-            sparse: true
         },
         role: {
             type: String,
@@ -41,6 +36,9 @@ const userSchema = new mongoose.Schema(
                 message: '{VALUE} is not a supported role'
             },
             default: 'client'
+        },
+        image: {
+            type: String
         },
         isActive: {
             type: Boolean,
