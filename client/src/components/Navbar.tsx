@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import SolvifyLogo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
 
+const API_BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false); // Mobile menu state
@@ -35,7 +36,7 @@ const Navbar = () => {
   // 2. Handle Logout
   const handleLogout = async () => {
     dispatch(logout());
-    const res = await fetch('/api/auth/logout', {
+    const res = await fetch(`${API_BASE_URL}/api/auth/logout`, {
       method: 'POST'
     });
     if (res.ok) {

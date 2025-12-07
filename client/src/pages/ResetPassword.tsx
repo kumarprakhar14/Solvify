@@ -9,7 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import SolvifyLogo from "../components/Logo"
 
-
+const API_BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
 
 const ResetPassword = () => {
     const { token } = useParams();
@@ -24,7 +24,7 @@ const ResetPassword = () => {
 
     const validateToken = async () => {
         try {
-            const validationResponse = await fetch(`/api/auth/validate-reset-token/${token}`, {
+            const validationResponse = await fetch(`${API_BASE_URL}/api/auth/validate-reset-token/${token}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ const ResetPassword = () => {
 
         // send reset password request to the server
         try {
-            const response = await fetch(`/api/auth/reset-password/${token}`, {
+            const response = await fetch(`${API_BASE_URL}/api/auth/reset-password/${token}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

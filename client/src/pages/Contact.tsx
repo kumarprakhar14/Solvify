@@ -11,6 +11,8 @@ import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { log } from "console";
 
+const API_BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -26,7 +28,7 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Basic validation
     if (!formData.name || !formData.email || !formData.service || !formData.projectTitle || !formData.description) {
       toast({
@@ -38,24 +40,24 @@ const Contact = () => {
     }
 
     // Here you would typically send the data to your backend
-    const response = await fetch("/api/user/inquiry", {
-      method: "POST", 
+    const response = await fetch(`${API_BASE_URL}/api/user/inquiry`, {
+      method: "POST",
       headers: {
         "content-type": "application/json"
       },
       body: JSON.stringify(formData)
     });
-    
+
     if (response.ok) {
-    toast({
-      title: "Inquiry Submitted!",
-      description: "We'll get back to you within 24 hours.",
-    });
-  }
+      toast({
+        title: "Inquiry Submitted!",
+        description: "We'll get back to you within 24 hours.",
+      });
+    }
 
     console.log(formData);
-    
-    
+
+
 
     // Reset form
     setFormData({

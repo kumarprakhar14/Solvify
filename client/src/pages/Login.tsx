@@ -13,6 +13,8 @@ import SolvifyLogo from "../components/Logo";
 import { useGoogleLogin } from '@react-oauth/google';
 import { googleAuth } from "@/api";
 
+const API_BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
+
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -37,7 +39,7 @@ const Login = () => {
 
     // send login request to the server
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

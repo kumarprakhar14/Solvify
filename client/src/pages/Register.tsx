@@ -8,6 +8,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import SolvifyLogo from "../components/Logo";
 import { toast } from "@/hooks/use-toast";
 
+const API_BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
+
 const Register = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -55,7 +57,7 @@ const Register = () => {
 
     // send registration request to the server
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
