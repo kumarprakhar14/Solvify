@@ -20,7 +20,7 @@ const app = express();
 // Middleware
 app.use(helmet());  // security headers
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173', 'https://solvify-topaz.vercel.app/', 'https://solvify-kumarprakharkp143-3045s-projects.vercel.app/'],
   credentials: true
 }));
 app.use(cookieParser());
