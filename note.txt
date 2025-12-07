@@ -36,7 +36,7 @@
 
 ✅ Retrieve inquiry object from controller for inngest event
 
-⚠️ Deploy
+✅ Deploy
 
 // Later on ->
 👉🏻 Implement an admin dashboard
@@ -45,4 +45,4 @@
 
 ✅ Refer Login.tsx for google oauth implementation
 👉🏻 Create update profile flow when user logs in using google
-👉🏻 Read about inngest deployment
+✅ Read about inngest deployment
