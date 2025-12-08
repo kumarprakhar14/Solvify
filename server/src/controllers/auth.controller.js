@@ -116,6 +116,9 @@ export const logout = async (req, res, next) => {
     }
 }
 
+
+// @desc Google OAuth 2.0
+// @route GET /api/auth/google-login
 export const googleLogin = async (req, res) => {
     try {
         const code = req.query.code;
