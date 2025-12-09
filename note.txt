@@ -1,0 +1,58 @@
+// TODOs
+
+✅ -> Done
+👉🏻 -> To be done
+⁉️ -> Important to do
+
+// ============== BACKEND ==============
+
+✅ Protected routes are inaccessible even with authorization bearer
+✅ Implement logout
+✅ New access token generation logic not working (Check gemini)
+✅ Check the flow of refesh token to access token: Mean, when the /refesh route is being hit. 
+✅ Logout is being handled only from frontend. Handle it from backend. (Navbar.tsx)
+✅ On inquiry submission -> server responds with 401- unauthorized
+✅ Forgot password
+✅ Design email reply flow for quotes/inquiry
+✅ Create Inngest flow for email notifications
+✅ Emails are sent to sandbox even when configured for actual smtp.
+✅ Create html templates for emails (Check claude)
+✅ Company logo not visible in email (Most email servers don't support svg)
+✅ Implement inngest function for forgot password
+✅ Consider implementing get request for forgot password
+✅ Retrieve inquiry object from controller for inngest event
+✅ Deploy
+✅ Read about inngest deployment
+✅ Deploy inngest server
+
+👉🏻 Refresh Token rotation
+👉🏻 Rate limiting
+👉🏻 Custom id generation for inquiry not working.
+
+⁉️ Email verification flow
+⁉️ Test all the endpoints on production
+
+// ============== FRONTEND ==============
+
+✅ Test register flow
+✅ After login, page is not being redirected to home
+✅ Implement redux store
+✅ Implement conditional rendering of '/' based on whether user is logged in or not.
+✅ Implement form submission for quotes
+✅ Auto-login (refresh token) not working on all pages.
+✅ Attach access token to authorization header from frontend only and use an interceptor to attach it for every request.
+✅ Consider implementing dark mode 
+✅ Implement google oauth
+✅ Refer Login.tsx for google oauth implementation
+
+👉🏻 Protect routes implementation (Client side)
+👉🏻 Filters are not working for portfolio page on client.
+👉🏻 Create update profile flow when user logs in using google
+
+⁉️ Test all the pages on production
+
+// ============== LATER ON ==============
+
+👉🏻 Implement an admin dashboard
+👉🏻 Implement user -> update profile functionality
+👉🏻 Design email flow for updates on inquiry status -> design after admin panel
