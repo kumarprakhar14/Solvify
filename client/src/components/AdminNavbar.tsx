@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/authSlice";
 import { Button } from "@/components/ui/button";
-import { LogOut, LayoutDashboard, Home, FileText } from "lucide-react";
+import { LogOut, LayoutDashboard, Home, FileText, User } from "lucide-react";
 import SolvifyLogo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
 import { RootState } from "../store/store";
@@ -53,6 +53,11 @@ const AdminNavbar = () => {
                         <p className="font-medium">{user?.name}</p>
                         <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
                     </div>
+                    <Link to="/profile">
+                        <Button variant="ghost" size="icon" title="My Profile">
+                            <User className="h-5 w-5" />
+                        </Button>
+                    </Link>
                     <ThemeToggle />
                     <Button variant="ghost" size="icon" onClick={handleLogout} title="Logout">
                         <LogOut className="h-5 w-5 text-red-500" />

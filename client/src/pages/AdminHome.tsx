@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, FileText, CheckCircle, XCircle, Clock, Send } from "lucide-react";
 import AdminNavbar from "@/components/AdminNavbar";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import AddAdminDialog from "@/components/AddAdminDialog";
 
 const AdminHome = () => {
     const { accessToken } = useSelector((state: RootState) => state.auth);
@@ -21,7 +22,8 @@ const AdminHome = () => {
 
     const { data: quotations, isLoading, error } = useQuery({
         queryKey: ['quotations'],
-        queryFn: fetchStats
+        queryFn: fetchStats,
+        enabled: !!accessToken,
     });
 
     if (isLoading) return <div className="flex justify-center items-center h-screen"><Loader2 className="animate-spin" /></div>;
@@ -44,7 +46,10 @@ const AdminHome = () => {
         <div className="min-h-screen bg-background">
             <AdminNavbar />
             <div className="container mx-auto p-6">
-                <h1 className="text-3xl font-bold mb-6">Dashboard Overview</h1>
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-3xl font-bold">Dashboard Overview</h1>
+                    <AddAdminDialog />
+                </div>
 
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
                     <Card>

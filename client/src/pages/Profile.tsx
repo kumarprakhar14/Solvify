@@ -35,7 +35,10 @@ const Profile = () => {
     const { data: user, isLoading, error } = useQuery({
         queryKey: ['profile'],
         queryFn: fetchProfile,
+        enabled: !!accessToken,
     });
+
+    const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
         if (user) {
@@ -67,6 +70,7 @@ const Profile = () => {
             dispatch(login({ user: data, accessToken })); // Update Redux state
             toast.success("Profile updated successfully");
             setFormData(prev => ({ ...prev, password: '' })); // Clear password field
+            setIsEditing(false); // Switch back to view mode
         },
         onError: () => {
             toast.error("Failed to update profile");
@@ -85,66 +89,99 @@ const Profile = () => {
         <div className="min-h-screen bg-background pt-20 pb-10">
             <div className="container mx-auto px-4 max-w-2xl">
                 <Card>
-                    <CardHeader>
+                    <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle className="flex items-center gap-2">
                             <User className="h-6 w-6" />
                             My Profile
                         </CardTitle>
+                        {!isEditing && (
+                            <Button onClick={() => setIsEditing(true)} variant="outline">
+                                Edit Profile
+                            </Button>
+                        )}
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="name">Full Name</Label>
-                                <Input
-                                    id="name"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    required
-                                />
+                        {isEditing ? (
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="name">Full Name</Label>
+                                    <Input
+                                        id="name"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="email">Email Address</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="phone">Phone Number</Label>
+                                    <Input
+                                        id="phone"
+                                        value={formData.phone}
+                                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                        placeholder="+1 (555) 000-0000"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="company">Company Name</Label>
+                                    <Input
+                                        id="company"
+                                        value={formData.company}
+                                        onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                                        placeholder="Acme Inc."
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="password">New Password (leave blank to keep current)</Label>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                        placeholder="••••••••"
+                                    />
+                                </div>
+                                <div className="flex gap-2">
+                                    <Button type="submit" className="flex-1" disabled={updateProfileMutation.isPending}>
+                                        <Save className="mr-2 h-4 w-4" />
+                                        {updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
+                                    </Button>
+                                    <Button type="button" variant="outline" onClick={() => setIsEditing(false)} disabled={updateProfileMutation.isPending}>
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </form>
+                        ) : (
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <Label className="text-muted-foreground">Full Name</Label>
+                                        <p className="text-lg font-medium">{user?.name || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <Label className="text-muted-foreground">Email Address</Label>
+                                        <p className="text-lg font-medium">{user?.email || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <Label className="text-muted-foreground">Phone Number</Label>
+                                        <p className="text-lg font-medium">{user?.phone || 'N/A'}</p>
+                                    </div>
+                                    <div>
+                                        <Label className="text-muted-foreground">Company Name</Label>
+                                        <p className="text-lg font-medium">{user?.company || 'N/A'}</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="email">Email Address</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="phone">Phone Number</Label>
-                                <Input
-                                    id="phone"
-                                    value={formData.phone}
-                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                    placeholder="+1 (555) 000-0000"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="company">Company Name</Label>
-                                <Input
-                                    id="company"
-                                    value={formData.company}
-                                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                                    placeholder="Acme Inc."
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="password">New Password (leave blank to keep current)</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    value={formData.password}
-                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    placeholder="••••••••"
-                                />
-                            </div>
-                            <Button type="submit" className="w-full" disabled={updateProfileMutation.isPending}>
-                                <Save className="mr-2 h-4 w-4" />
-                                {updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
-                            </Button>
-                        </form>
+                        )}
                     </CardContent>
                 </Card>
             </div>

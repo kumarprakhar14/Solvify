@@ -130,8 +130,8 @@ const Navbar = () => {
                       className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <Settings className="h-4 w-4" />
-                      Update Profile
+                      <User className="h-4 w-4" />
+                      My Profile
                     </Link>
 
                     <button
@@ -210,7 +210,7 @@ const Navbar = () => {
 
                     <Link to="/profile" onClick={() => setIsOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start gap-2">
-                        <Settings className="h-4 w-4" /> Update Profile
+                        <User className="h-4 w-4" /> My Profile
                       </Button>
                     </Link>
                     <Button

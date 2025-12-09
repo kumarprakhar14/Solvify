@@ -100,10 +100,10 @@ const Login = () => {
         if (!authResult.code) return;
         const res = await googleAuth(authResult.code);
         // save token in LocalStorage
-        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("token", res.data.accessToken);
         localStorage.setItem("user", JSON.stringify(res.data.userInfo));
 
-        dispatch(login({ user: res.data.userInfo, accessToken: res.data.token }));
+        dispatch(login({ user: res.data.userInfo, accessToken: res.data.accessToken }));
         dispatch(setStatus("authenticated"));
 
         if (res.data.userInfo.role === 'admin') {
