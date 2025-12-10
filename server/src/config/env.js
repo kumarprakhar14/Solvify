@@ -33,7 +33,6 @@ export const config = {
     google: {
         clientId: requireEnv("GOOGLE_CLIENT_ID"),
         clientSecret: requireEnv("GOOGLE_CLIENT_SECRET"),
-        apiKey: requireEnv("GEMINI_API_KEY"),
     },
 
     redirectUrl: requireEnv("REDIRECT_URL", "http://localhost:3000"),

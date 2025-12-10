@@ -7,13 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Mail, Phone, MapPin, Clock, Loader2 } from "lucide-react"; // Added Loader2
+import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { log } from "console";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
 
 const Contact = () => {
-  const [isLoading, setIsLoading] = useState(false); // New loading state
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -39,53 +39,38 @@ const Contact = () => {
       return;
     }
 
-    setIsLoading(true); // Start loading
+    // Here you would typically send the data to your backend
+    const response = await fetch(`${API_BASE_URL}/api/user/inquiry`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json"
+      },
+      body: JSON.stringify(formData)
+    });
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/user/inquiry`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to submit inquiry");
-      }
-
-      // Success Logic
+    if (response.ok) {
       toast({
-        title: "Inquiry Submitted Successfully!",
-        description: "We have received your details. A quotation is being generated and will be sent to your email shortly.",
-        duration: 5000,
+        title: "Inquiry Submitted!",
+        description: "We'll get back to you within 24 hours.",
       });
-
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        company: "",
-        service: "",
-        projectTitle: "",
-        description: "",
-        budget: "",
-        timeline: "",
-      });
-
-    } catch (error: any) {
-      console.error("Submission Error:", error);
-      toast({
-        title: "Submission Failed",
-        description: error.message || "Something went wrong. Please try again later.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false); // Stop loading regardless of outcome
     }
+
+    console.log(formData);
+
+
+
+    // Reset form
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      company: "",
+      service: "",
+      projectTitle: "",
+      description: "",
+      budget: "",
+      timeline: "",
+    });
   };
 
   const handleChange = (field: string, value: string) => {
@@ -209,7 +194,6 @@ const Contact = () => {
                             onChange={(e) => handleChange("name", e.target.value)}
                             placeholder="John Doe"
                             required
-                            disabled={isLoading}
                           />
                         </div>
                         <div className="space-y-2">
@@ -223,7 +207,6 @@ const Contact = () => {
                             onChange={(e) => handleChange("email", e.target.value)}
                             placeholder="john@example.com"
                             required
-                            disabled={isLoading}
                           />
                         </div>
                       </div>
@@ -237,7 +220,6 @@ const Contact = () => {
                             value={formData.phone}
                             onChange={(e) => handleChange("phone", e.target.value)}
                             placeholder="+1 (234) 567-890"
-                            disabled={isLoading}
                           />
                         </div>
                         <div className="space-y-2">
@@ -247,7 +229,6 @@ const Contact = () => {
                             value={formData.company}
                             onChange={(e) => handleChange("company", e.target.value)}
                             placeholder="Your Company"
-                            disabled={isLoading}
                           />
                         </div>
                       </div>
@@ -256,11 +237,7 @@ const Contact = () => {
                         <Label htmlFor="service">
                           Service Type <span className="text-destructive">*</span>
                         </Label>
-                        <Select
-                          value={formData.service}
-                          onValueChange={(value) => handleChange("service", value)}
-                          disabled={isLoading}
-                        >
+                        <Select value={formData.service} onValueChange={(value) => handleChange("service", value)}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select a service" />
                           </SelectTrigger>
@@ -284,7 +261,6 @@ const Contact = () => {
                           onChange={(e) => handleChange("projectTitle", e.target.value)}
                           placeholder="Brief title for your project"
                           required
-                          disabled={isLoading}
                         />
                       </div>
 
@@ -300,7 +276,6 @@ const Contact = () => {
                           rows={5}
                           required
                           minLength={50}
-                          disabled={isLoading}
                         />
                       </div>
 
@@ -309,11 +284,7 @@ const Contact = () => {
                           <Label htmlFor="budget">
                             Budget Range <span className="text-destructive">*</span>
                           </Label>
-                          <Select
-                            value={formData.budget}
-                            onValueChange={(value) => handleChange("budget", value)}
-                            disabled={isLoading}
-                          >
+                          <Select value={formData.budget} onValueChange={(value) => handleChange("budget", value)}>
                             <SelectTrigger>
                               <SelectValue placeholder="Select budget range" />
                             </SelectTrigger>
@@ -330,11 +301,7 @@ const Contact = () => {
                           <Label htmlFor="timeline">
                             Expected Timeline <span className="text-destructive">*</span>
                           </Label>
-                          <Select
-                            value={formData.timeline}
-                            onValueChange={(value) => handleChange("timeline", value)}
-                            disabled={isLoading}
-                          >
+                          <Select value={formData.timeline} onValueChange={(value) => handleChange("timeline", value)}>
                             <SelectTrigger>
                               <SelectValue placeholder="Select timeline" />
                             </SelectTrigger>
@@ -348,15 +315,8 @@ const Contact = () => {
                         </div>
                       </div>
 
-                      <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading}>
-                        {isLoading ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Submitting Inquiry...
-                          </>
-                        ) : (
-                          "Submit Inquiry"
-                        )}
+                      <Button type="submit" variant="hero" size="lg" className="w-full">
+                        Submit Inquiry
                       </Button>
                     </form>
                   </CardContent>

@@ -31,7 +31,6 @@ export const deserializeUser = async (req, res, next) => {
          // Attach decoded payload (userId, email, etc.)
         next();
     } catch (error) {
-        console.error("Deserialize User Error:", error.message);
         return res.status(401).json({ message: "Invalid or expired token" });
     }
 };

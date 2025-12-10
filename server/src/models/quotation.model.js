@@ -1,24 +1,24 @@
 import mongoose from "mongoose";
-import Counter from "./counter.model.js";
 
 // Define a sub-schema for line items to ensure structure
 const lineItemSchema = new mongoose.Schema({
     description: { type: String, required: true },
-    quantity: { type: Number, required: true, min: 1, default: 1 },
+    quantity: { type: Number, required: true, min: 1 },
     unitPrice: { type: Number, required: true, min: 0 },
     subtotal: { type: Number, required: true }
+    // You might want to auto-calc subtotal in a pre-save hook: this.quantity * this.unitPrice
 });
 
 const quotationSchema = new mongoose.Schema({
     quotationId: {
         type: String,
         unique: true,
-        // Auto-generated: QUOTE-YYYY-XXXX
+        // Note: Similar to Inquiry, implement generation logic for 'QUO-YYYY-XXXX'
     },
     inquiryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Inquiry',
-        required: false // Can be created without an inquiry
+        required: true
     },
     clientName: {
         type: String,
@@ -31,27 +31,11 @@ const quotationSchema = new mongoose.Schema({
         trim: true,
         lowercase: true
     },
-    clientCompany: {
-        type: String,
-        trim: true
-    },
-    clientPhone: {
-        type: String,
-        trim: true
-    },
-    clientAddress: {
-        type: String,
-        trim: true
-    },
-    subject: {
+    projectName: {
         type: String,
         required: true
     },
-    projectOverview: {
-        type: String,
-        required: true
-    },
-    lineItems: [lineItemSchema], // Scope of work / Pricing breakdown
+    lineItems: [lineItemSchema], // Array of line items
     subtotal: {
         type: Number,
         required: true,
@@ -85,51 +69,29 @@ const quotationSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    exclusions: {
-        type: String,
-        default: ''
-    },
     termsAndConditions: {
         type: String,
         default: ''
     },
+    pdfUrl: {
+        type: String, // Path to generated PDF file
+        default: ''
+    },
     status: {
         type: String,
-        enum: ['pending', 'approved', 'rejected', 'sent'], 
-        default: 'pending' 
+        enum: ['draft', 'sent', 'accepted', 'rejected'],
+        default: 'draft'
     },
-    validUntil: {
+    sentAt: {
         type: Date
     },
-    generatedByAi: {
-        type: Boolean,
-        default: false
+    respondedAt: {
+        type: Date
     }
 }, {
     timestamps: true
 });
 
-// Auto-increment logic for quotationId
-quotationSchema.pre('save', async function(next) {
-    if(this.quotationId) return next();
-
-    const year = new Date().getFullYear();
-    const counterId = `quotation_${year}`;
-
-    try {
-        const counter = await Counter.findOneAndUpdate(
-            { id: counterId },
-            { $inc: { seq: 1} },
-            { new: true, upsert: true}
-        );
-
-        const padded = String(counter.seq).padStart(4, '0');
-        this.quotationId = `QUOTE-${year}-${padded}`;
-        next();
-    } catch (error) {
-        next(error);
-    }
-});
-
 const Quotation = mongoose.model('Quotation', quotationSchema);
-export default Quotation;
+
+module.exports = Quotation;

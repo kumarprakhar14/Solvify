@@ -1,8 +1,7 @@
 import { Router } from "express";
-import { router as authRoutes } from "./auth.routes.js";
-import { router as userRoutes } from "./user.routes.js";
-import { router as quotationRoutes } from "./quotation.routes.js";
-import { router as adminRoutes } from "./admin.routes.js";
+import { router as authRoutes } from "./auth.routes.js"
+import { router as userRoutes } from "./user.routes.js"
+import { requireAuth } from "../middlewares/requireAuth.js";
 
 const router = Router();
 
@@ -12,11 +11,12 @@ router.get("/", (req, res) => {
 });
 
 // Public routes
+// Mount auth routes
 router.use("/auth", authRoutes);
 
-// Protected routes
+// Protected rotues
+// Mount product routes
+
 router.use("/user", userRoutes);
-router.use("/quotations", quotationRoutes);
-router.use("/admin", adminRoutes);
 
 export { router };

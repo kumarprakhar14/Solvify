@@ -14,8 +14,6 @@ import { onUserSignup } from "./inngest/functions/on-signup.js"
 import { onUserForgotPassword } from "./inngest/functions/on-forgot-password.js"
 import { onUserPasswordChange } from "./inngest/functions/on-password-change.js";
 import { onInquirySubmission } from "./inngest/functions/on-inquiry-submission.js";
-import { onQuotationApproved } from "./inngest/functions/on-quotation-approved.js";
-import { deserializeUser } from "./middlewares/deserializeuser.js";
 
 const app = express();
 
@@ -43,20 +41,18 @@ app.use(passport.session())
 // Set up the "/api/inngest" routes with the serve handler
 app.use("/api/inngest", serve({
   client: inngest,
-  functions: [helloWorld, onUserSignup, onUserForgotPassword, onUserPasswordChange, onInquirySubmission, onQuotationApproved]
-}));
+  functions: [helloWorld, onUserSignup, onUserForgotPassword, onUserPasswordChange, onInquirySubmission]
+})
+);
 
-// Health check route
+// Healt check route
+// Basically, checks if the API(app) is up and running.
 app.get("/health", (req, res) => {
   res.json({ status: "ok", message: "API is healty" });
 });
 
-// Root route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to the Solvify API 🚀" });
-});
-
 // Inngest test route
+// Create a new route
 app.get("/api/hello", async function (req, res, next) {
   await inngest.send({
     name: "test/hello.world",
@@ -68,7 +64,7 @@ app.get("/api/hello", async function (req, res, next) {
 });
 
 // Apply globally -> every request will check for a token if present
-app.use(deserializeUser);
+// app.use(deserializeUser);
 
 // API routes
 app.use("/api", apiRouter);
@@ -83,3 +79,13 @@ app.use((err, req, res, next) => {
 });
 
 export { app };
+
+// helmet() → protects against common HTTP header attacks.
+
+// cors() → allows frontend apps (React, Next.js, etc.) to talk to this API.
+
+// express.json() & express.urlencoded() → parses incoming request bodies.
+
+// morgan("dev") → nice request logs in the console.
+
+// /health → quick route to check if server is alive (handy in deployment).

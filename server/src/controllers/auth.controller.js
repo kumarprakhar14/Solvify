@@ -35,8 +35,7 @@ export const register = async (req, res) => {
             user: {
                 id: user._id,
                 name: user.name,
-                email: user.email,
-                role: user.role
+                email: user.email
             }
         });
     } catch (err) {
@@ -73,23 +72,29 @@ export const login = async (req, res) => {
 
         // Hash the refresh token before saving
         const hashedRefreshToken = await hashify(refeshToken);
-        
-        // Save refresh token to DB (optional, depending on implementation, but usually we just send it in cookie)
+
+        // we will implement hashing logic for refresh token
+        user.refreshTokens.push(hashedRefreshToken);
+        await user.save();
+
+        // Send plain refresh token as HttpOnly Cookie, not the hashed one
         res.cookie("refreshToken", refeshToken, {
             httpOnly: true,
-            secure: true, // Required for SameSite=None, works on localhost
-            sameSite: "none",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "none",  // accept cross-site cookies
             maxAge: 7 * 24 * 60 * 60 * 1000,  // 7 days in miliseconds
         });
 
+        // Set authorization header
+        await res.set({ 'authorization': `Bearer ${accessToken}` });
+        console.log(user);
         return res.status(200).json({
             message: "Login successful",
             accessToken,
             user: {
                 id: user._id,
                 name: user.name,
-                email: user.email,
-                role: user.role
+                email: user.email
             }
         });
     } catch (err) {
@@ -104,7 +109,6 @@ export const login = async (req, res) => {
 export const logout = async (req, res, next) => {
     try {
         res.removeHeader('Authorization');
-        res.clearCookie('refreshToken'); // Clear the cookie
         return res.status(200).json({ message: "Logout Successful" });
     } catch (err) {
         console.error("Logout Error", err);
@@ -159,13 +163,21 @@ export const googleLogin = async (req, res) => {
 
         // Hash the refresh token before saving
         const hashedRefreshToken = await hashify(refeshToken);
-        
+
+        // we will implement hashing logic for refresh token
+        user.refreshTokens.push(hashedRefreshToken);
+        await user.save();
+
+        // Send plain refresh token as HttpOnly Cookie, not the hashed one
         res.cookie("refreshToken", refeshToken, {
             httpOnly: true,
-            secure: true, // Required for SameSite=None, works on localhost
+            secure: process.env.NODE_ENV === "production",
             sameSite: "none",
             maxAge: 7 * 24 * 60 * 60 * 1000,  // 7 days in miliseconds
         });
+
+        // Set authorization header
+        await res.set({ 'authorization': `Bearer ${accessToken}` });
 
         return res.status(200).json({
             message: "success",
@@ -175,7 +187,6 @@ export const googleLogin = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 image: user.image,
-                role: user.role
             }
         })
 
@@ -197,31 +208,24 @@ export const refreshToken = async (req, res, next) => {
         }
 
         // verify refresh token
-        const payload = await verifyRefreshToken(refreshToken);
-        if (!payload) {
-            return res.status(403).json({ message: "Invalid refresh token" });
-        }
+        const payload = verifyRefreshToken(refreshToken);
+        const userObj = await User.findById(payload.id)
 
-        // check if user exists
-        const user = await User.findById(payload.userId);
-        if (!user) {
-            return res.status(403).json({ message: "User not found" });
-        }
 
         // issue new access token
-        const newAccessToken = generateAcessToken(user._id);
+        const newAccessToken = generateAcessToken({ userId: payload.id });
 
+        if (!newAccessToken) {
+            console.log("Couldn't not generate new access token");
+        }
+
+        // Set authorization header
         res.set({ 'authorization': `Bearer ${newAccessToken}` });
 
         return res.status(200).json({
-            accessToken: newAccessToken,
+            newAccessToken,
             message: "New access token issued",
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role
-            }
+            user: userObj
         });
     } catch (err) {
         next(err);

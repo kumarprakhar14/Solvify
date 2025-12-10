@@ -5,15 +5,20 @@ import { inngest } from "../inngest/index.js";
 // @desc Create new inquiry
 // @route POST /api/inquiry
 export const createInquiry = async (req, res) => {
+    // console.log(req.body);
+
     try {
         const { name, email, phone, company, service, projectTitle, description, budget, timeline  } = req.body;
 
-        // 1. OPTIONAL: Check if user exists, but DO NOT BLOCK if they don't
+        // Check if user exists 
         const user = await User.findOne({ email });
-        
-        // 2. Create inquiry document
+        if(!user) {
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        // Create inquiry document
         const inquiry = new Inquiry({
-            userId: user ? user._id : null, // Link if user exists, else null
+            userId: user._id,
             name, 
             email,
             phone,
@@ -27,23 +32,21 @@ export const createInquiry = async (req, res) => {
 
         await inquiry.save();
 
-        // 3. Fire inngest event
-        // This hands off the "heavy lifting" (AI generation) to the background
+        // Fire inngest event
         await inngest.send({
             name: "inquiry/submit",
             data: {
-                inquiryId: inquiry._id, // Send ID, fetch fresh data in function
-                inquiryData: req.body   // Or send raw data
+                inquiry,
             },
         });
 
         return res.status(201).json({
-            message: "Inquiry received. Quotation generation started.",
+            message: "Inquiry created successfully",
             inquiry
-        });
+        })
 
     } catch (error) {
         console.error("Create Inquiry error: ", error);
-        return res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: "Server error"})
     }
 }

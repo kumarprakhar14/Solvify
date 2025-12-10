@@ -99,6 +99,7 @@ const Navbar = () => {
                   size="icon"
                   className="rounded-full border border-border"
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
+                // onMouseEnter={() => setIsProfileOpen(true)} // Uncomment if you strictly want hover
                 >
                   <User className="h-5 w-5" />
                 </Button>
@@ -114,24 +115,13 @@ const Navbar = () => {
                       </p>
                     </div>
 
-                    {user?.role === 'admin' && (
-                      <Link
-                        to="/admin"
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-                        onClick={() => setIsProfileOpen(false)}
-                      >
-                        <Code2 className="h-4 w-4" />
-                        Dashboard
-                      </Link>
-                    )}
-
                     <Link
                       to="/profile"
                       className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <User className="h-4 w-4" />
-                      My Profile
+                      <Settings className="h-4 w-4" />
+                      Update Profile
                     </Link>
 
                     <button
@@ -199,18 +189,9 @@ const Navbar = () => {
                       <p className="text-sm font-medium">{user?.name}</p>
                       <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
                     </div>
-
-                    {user?.role === 'admin' && (
-                      <Link to="/admin" onClick={() => setIsOpen(false)}>
-                        <Button variant="ghost" className="w-full justify-start gap-2">
-                          <Code2 className="h-4 w-4" /> Dashboard
-                        </Button>
-                      </Link>
-                    )}
-
                     <Link to="/profile" onClick={() => setIsOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start gap-2">
-                        <User className="h-4 w-4" /> My Profile
+                        <Settings className="h-4 w-4" /> Update Profile
                       </Button>
                     </Link>
                     <Button
