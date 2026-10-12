@@ -10,15 +10,12 @@ export const createInquiry = async (req, res) => {
     try {
         const { name, email, phone, company, service, projectTitle, description, budget, timeline  } = req.body;
 
-        // Check if user exists 
+        // Check if user exists (link account if registered)
         const user = await User.findOne({ email });
-        if(!user) {
-            return res.status(400).json({ message: "User not found" });
-        }
 
         // Create inquiry document
         const inquiry = new Inquiry({
-            userId: user._id,
+            userId: user ? user._id : undefined,
             name, 
             email,
             phone,
@@ -37,6 +34,7 @@ export const createInquiry = async (req, res) => {
             name: "inquiry/submit",
             data: {
                 inquiry,
+                inquiryId: inquiry._id,
             },
         });
 

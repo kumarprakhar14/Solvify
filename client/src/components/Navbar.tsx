@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../store/authSlice.ts";
 import type { RootState } from "../store/store.ts";
-import { Menu, X, Code2, User, LogOut, Settings } from "lucide-react";
+import { Menu, X, Code2, User, LogOut, Settings, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SolvifyLogo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
@@ -115,6 +115,17 @@ const Navbar = () => {
                       </p>
                     </div>
 
+                    {user?.role === "admin" && (
+                      <Link
+                        to="/admin"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-primary font-medium hover:bg-accent transition-colors"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <LayoutDashboard className="h-4 w-4" />
+                        Admin Dashboard
+                      </Link>
+                    )}
+
                     <Link
                       to="/profile"
                       className="flex items-center gap-2 px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
@@ -189,6 +200,13 @@ const Navbar = () => {
                       <p className="text-sm font-medium">{user?.name}</p>
                       <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
                     </div>
+                    {user?.role === "admin" && (
+                      <Link to="/admin" onClick={() => setIsOpen(false)}>
+                        <Button variant="outline" className="w-full justify-start gap-2 mb-1 text-primary border-primary/30">
+                          <LayoutDashboard className="h-4 w-4" /> Admin Dashboard
+                        </Button>
+                      </Link>
+                    )}
                     <Link to="/profile" onClick={() => setIsOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start gap-2">
                         <Settings className="h-4 w-4" /> Update Profile

@@ -1,16 +1,13 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { config } from "../config/env.js";
 
-// Initialize Gemini
-// Note: Ensure GEMINI_API_KEY is added to .env and config
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
-
 export const generateQuotationContent = async (inquiryDetails) => {
-    if (!process.env.GEMINI_API_KEY) {
+    const apiKey = config.gemini?.apiKey || config.google?.apiKey || process.env.GEMINI_API_KEY;
+    if (!apiKey) {
         throw new Error("GEMINI_API_KEY is not configured");
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const ai = new GoogleGenAI({ apiKey });
 
     const prompt = `
     You are an expert IT Sales Engineer. Your goal is to generate a structured quotation based on client requirements. 
@@ -55,16 +52,24 @@ export const generateQuotationContent = async (inquiryDetails) => {
     `;
 
     try {
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        let text = response.text();
+        const response = await ai.models.generateContent({
+            model: process.env.GEMINI_MODEL || "gemini-3.8-flash",
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+            },
+        });
+
+        let text = response.text;
         
         // Clean up markdown if present
-        text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+        if (typeof text === "string") {
+            text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+        }
         
         return JSON.parse(text);
     } catch (error) {
         console.error("Error generating quotation with AI:", error);
-        throw new Error("Failed to generate quotation content");
+        throw new Error(error.message || "Failed to generate quotation content");
     }
 };

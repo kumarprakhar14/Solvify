@@ -21,7 +21,9 @@ export const onUserSignup = inngest.createFunction(
             await step.run("send-welcome-email", async () => {
                 const subject = `Welcome to Solvify`;
                 const message = getWelcomeEmailTemplate(user.name, user.email);
-                await sendMail(user.email, subject, message);
+                await sendMail(user.email, subject, message, {
+                    idempotencyKey: `signup-${user._id}`
+                });
             });
 
             return { success: true };

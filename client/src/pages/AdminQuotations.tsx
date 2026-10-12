@@ -18,6 +18,8 @@ interface Quotation {
     subject: string;
     totalAmount: number;
     status: string;
+    generatedByAi?: boolean;
+    aiError?: string;
     createdAt: string;
 }
 
@@ -72,7 +74,7 @@ const AdminQuotations = () => {
             <div className="container mx-auto p-6">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-3xl font-bold">Quotations</h1>
-                    <Button onClick={() => navigate('/quotations/new')}>Create New Quotation</Button>
+                    <Button onClick={() => navigate('/admin/quotations/new')}>Create New Quotation</Button>
                 </div>
 
                 <div className="grid gap-4">
@@ -89,6 +91,15 @@ const AdminQuotations = () => {
                                     }>
                                         {quote.status}
                                     </Badge>
+                                    {quote.generatedByAi ? (
+                                        <span className="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200">
+                                            AI Draft
+                                        </span>
+                                    ) : (
+                                        <span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200" title={quote.aiError || 'Requires manual review'}>
+                                            Manual Review
+                                        </span>
+                                    )}
                                 </div>
                             </CardHeader>
                             <CardContent>

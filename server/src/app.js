@@ -14,6 +14,7 @@ import { onUserSignup } from "./inngest/functions/on-signup.js"
 import { onUserForgotPassword } from "./inngest/functions/on-forgot-password.js"
 import { onUserPasswordChange } from "./inngest/functions/on-password-change.js";
 import { onInquirySubmission } from "./inngest/functions/on-inquiry-submission.js";
+import { onQuotationApproved } from "./inngest/functions/on-quotation-approved.js";
 
 const app = express();
 
@@ -41,7 +42,14 @@ app.use(passport.session())
 // Set up the "/api/inngest" routes with the serve handler
 app.use("/api/inngest", serve({
   client: inngest,
-  functions: [helloWorld, onUserSignup, onUserForgotPassword, onUserPasswordChange, onInquirySubmission]
+  functions: [
+    helloWorld,
+    onUserSignup,
+    onUserForgotPassword,
+    onUserPasswordChange,
+    onInquirySubmission,
+    onQuotationApproved
+  ]
 })
 );
 

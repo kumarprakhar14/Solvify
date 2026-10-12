@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { login } from "../store/authSlice";
+import { login, setStatus } from "../store/authSlice";
 
 const API_BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
 
@@ -21,7 +21,7 @@ export const useAuth = () => {
                 dispatch(login({ user: data.user, accessToken: data.accessToken }));
 
             } catch (error) {
-                console.log("An error occurred: ", error);
+                dispatch(setStatus("unauthenticated"));
             }
         }
         initAuth();

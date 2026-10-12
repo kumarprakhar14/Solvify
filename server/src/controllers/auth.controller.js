@@ -93,8 +93,10 @@ export const login = async (req, res) => {
             accessToken,
             user: {
                 id: user._id,
+                _id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                role: user.role
             }
         });
     } catch (err) {
@@ -127,9 +129,10 @@ export const googleLogin = async (req, res) => {
         }
 
         // Exchange code for tokens
+        const redirectUri = process.env.REDIRECT_URL || process.env.GOOGLE_REDIRECT_URL || "postmessage";
         const { tokens } = await googleClient.getToken({
             code,
-            redirect_uri: process.env.REDIRECT_URL,
+            redirect_uri: redirectUri,
         });
         googleClient.setCredentials(tokens);
 
@@ -179,20 +182,26 @@ export const googleLogin = async (req, res) => {
         // Set authorization header
         await res.set({ 'authorization': `Bearer ${accessToken}` });
 
+        const userData = {
+            _id: user._id,
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            image: user.image,
+            role: user.role
+        };
+
         return res.status(200).json({
             message: "success",
             accessToken,
-            userInfo: {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                image: user.image,
-            }
-        })
+            token: accessToken,
+            user: userData,
+            userInfo: userData
+        });
 
     } catch (error) {
         console.error("Google Login Error", error);
-        return res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: error.message || "Server Error" });
     }
 }
 
@@ -207,16 +216,26 @@ export const refreshToken = async (req, res, next) => {
             return res.status(403).json({ message: "Refresh token missing" });
         }
 
-        // verify refresh token
-        const payload = verifyRefreshToken(refreshToken);
-        const userObj = await User.findById(payload.id)
+        // verify refresh token gracefully
+        let payload;
+        try {
+            payload = verifyRefreshToken(refreshToken);
+        } catch (jwtErr) {
+            res.clearCookie("refreshToken");
+            return res.status(401).json({ message: "Invalid or expired refresh token" });
+        }
 
+        const userObj = await User.findById(payload.id);
+        if (!userObj) {
+            res.clearCookie("refreshToken");
+            return res.status(403).json({ message: "User not found" });
+        }
 
         // issue new access token
-        const newAccessToken = generateAcessToken({ userId: payload.id });
+        const newAccessToken = generateAcessToken(userObj._id);
 
         if (!newAccessToken) {
-            console.log("Couldn't not generate new access token");
+            console.log("Couldn't generate new access token");
         }
 
         // Set authorization header
@@ -224,8 +243,15 @@ export const refreshToken = async (req, res, next) => {
 
         return res.status(200).json({
             newAccessToken,
+            accessToken: newAccessToken,
             message: "New access token issued",
-            user: userObj
+            user: {
+                id: userObj._id,
+                _id: userObj._id,
+                name: userObj.name,
+                email: userObj.email,
+                role: userObj.role
+            }
         });
     } catch (err) {
         next(err);

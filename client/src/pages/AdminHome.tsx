@@ -1,13 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { RootState } from "../store/store";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, FileText, CheckCircle, XCircle, Clock, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Loader2, FileText, CheckCircle, XCircle, Clock, Send, Plus } from "lucide-react";
 import AdminNavbar from "@/components/AdminNavbar";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import AddAdminDialog from "@/components/AddAdminDialog";
 
 const AdminHome = () => {
+    const navigate = useNavigate();
     const { accessToken } = useSelector((state: RootState) => state.auth);
     const API_BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
 
@@ -46,12 +49,20 @@ const AdminHome = () => {
         <div className="min-h-screen bg-background">
             <AdminNavbar />
             <div className="container mx-auto p-6">
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold">Dashboard Overview</h1>
-                    <AddAdminDialog />
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div>
+                        <h1 className="text-3xl font-bold">Dashboard Overview</h1>
+                        <p className="text-muted-foreground text-sm">Key performance metrics and quotation analytics.</p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3">
+                        <AddAdminDialog />
+                        <Button onClick={() => navigate('/admin/quotations/new')}>
+                            <Plus className="mr-2 h-4 w-4" /> Create Quotation
+                        </Button>
+                    </div>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+                <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 mb-8">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Total Quotations</CardTitle>

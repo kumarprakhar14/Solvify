@@ -1,24 +1,23 @@
 import mongoose from "mongoose";
+import Counter from "./counter.model.js";
 
 // Define a sub-schema for line items to ensure structure
 const lineItemSchema = new mongoose.Schema({
     description: { type: String, required: true },
-    quantity: { type: Number, required: true, min: 1 },
-    unitPrice: { type: Number, required: true, min: 0 },
-    subtotal: { type: Number, required: true }
-    // You might want to auto-calc subtotal in a pre-save hook: this.quantity * this.unitPrice
+    quantity: { type: Number, required: true, default: 1, min: 1 },
+    unitPrice: { type: Number, required: true, default: 0, min: 0 },
+    subtotal: { type: Number, required: true, default: 0 }
 });
 
 const quotationSchema = new mongoose.Schema({
     quotationId: {
         type: String,
         unique: true,
-        // Note: Similar to Inquiry, implement generation logic for 'QUO-YYYY-XXXX'
     },
     inquiryId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Inquiry',
-        required: true
+        required: false
     },
     clientName: {
         type: String,
@@ -31,14 +30,34 @@ const quotationSchema = new mongoose.Schema({
         trim: true,
         lowercase: true
     },
+    clientCompany: {
+        type: String,
+        default: ''
+    },
+    clientPhone: {
+        type: String,
+        default: ''
+    },
+    clientAddress: {
+        type: String,
+        default: ''
+    },
+    subject: {
+        type: String,
+        default: ''
+    },
     projectName: {
         type: String,
-        required: true
+        default: ''
     },
-    lineItems: [lineItemSchema], // Array of line items
+    projectOverview: {
+        type: String,
+        default: ''
+    },
+    lineItems: [lineItemSchema],
     subtotal: {
         type: Number,
-        required: true,
+        default: 0,
         min: 0
     },
     taxPercentage: {
@@ -63,24 +82,40 @@ const quotationSchema = new mongoose.Schema({
     },
     paymentTerms: {
         type: String,
-        required: true
+        default: 'Milestone 1: 40%, Milestone 2: 30%, Milestone 3: 30%'
     },
     timeline: {
         type: String,
-        required: true
+        default: ''
+    },
+    exclusions: {
+        type: String,
+        default: ''
     },
     termsAndConditions: {
         type: String,
         default: ''
     },
+    validUntil: {
+        type: String,
+        default: ''
+    },
     pdfUrl: {
-        type: String, // Path to generated PDF file
+        type: String,
         default: ''
     },
     status: {
         type: String,
-        enum: ['draft', 'sent', 'accepted', 'rejected'],
-        default: 'draft'
+        enum: ['draft', 'pending', 'approved', 'sent', 'rejected', 'accepted'],
+        default: 'pending'
+    },
+    generatedByAi: {
+        type: Boolean,
+        default: false
+    },
+    aiError: {
+        type: String,
+        default: ''
     },
     sentAt: {
         type: Date
@@ -92,6 +127,31 @@ const quotationSchema = new mongoose.Schema({
     timestamps: true
 });
 
+quotationSchema.pre('save', async function(next) {
+    if (this.quotationId) return next();
+
+    const year = new Date().getFullYear();
+    const counterId = `quotation_${year}`;
+
+    const counter = await Counter.findOneAndUpdate(
+        { id: counterId },
+        { $inc: { seq: 1 } },
+        { new: true, upsert: true }
+    );
+
+    const padded = String(counter.seq).padStart(4, '0');
+    this.quotationId = `QUO-${year}-${padded}`;
+
+    if (!this.projectName) {
+        this.projectName = this.subject || `${this.clientName}'s Project`;
+    }
+    if (!this.subject) {
+        this.subject = this.projectName;
+    }
+
+    next();
+});
+
 const Quotation = mongoose.model('Quotation', quotationSchema);
 
-module.exports = Quotation;
+export default Quotation;

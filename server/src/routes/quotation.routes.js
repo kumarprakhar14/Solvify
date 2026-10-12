@@ -8,8 +8,12 @@ import {
 } from "../controllers/quotation.controller.js";
 import { requireAuth } from "../middlewares/requireAuth.js";
 import { requireAdmin } from "../middlewares/roleAuth.js";
+import { deserializeUser } from "../middlewares/deserializeuser.js";
 
 const router = Router();
+
+// Populate req.user from Bearer token
+router.use(deserializeUser);
 
 // Public or Client routes
 router.post("/generate", requireAuth, generateQuotation); // Clients can generate drafts

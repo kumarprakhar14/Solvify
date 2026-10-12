@@ -68,7 +68,11 @@ const Login = () => {
       if (response.status === 200) {
         dispatch(login({ user: data.user, accessToken: data.accessToken }));
         dispatch(setStatus("authenticated"));
-        navigate('/');
+        if (data.user?.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       }
 
       // clear form
@@ -94,13 +98,20 @@ const Login = () => {
       try {
         if (!authResult.code) return;
         const res = await googleAuth(authResult.code);
-        // save token in LocalStorage
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data.userInfo));
+        const token = res.data.token || res.data.accessToken;
+        const user = res.data.userInfo || res.data.user;
 
-        dispatch(login({ user: res.data.userInfo, accessToken: res.data.token }));
+        // save token in LocalStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        dispatch(login({ user, accessToken: token }));
         dispatch(setStatus("authenticated"));
-        navigate("/");
+        if (user?.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       } catch (error) {
         console.error("Error while requestig google code", error);
         toast({

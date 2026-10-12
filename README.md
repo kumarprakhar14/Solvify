@@ -18,7 +18,7 @@ A modern, full-stack MERN application for managing client inquiries and project 
 - 🔐 **Robust Authentication** - Email/password login, Google OAuth, JWT-based sessions with refresh token rotation
 - 📋 **Inquiry Management** - Submit detailed project inquiries with auto-generated IDs (INQ-YYYY-XXXX)
 - 💼 **Quotation System** - Generate and manage professional quotations linked to inquiries
-- 📧 **Email Notifications** - Automated transactional emails via Mailtrap for signup, password reset, and inquiry submissions
+- 📧 **Email Notifications** - Automated transactional emails via Resend for signup, password reset, and inquiry submissions
 - 🎨 **Modern UI** - Responsive design with dark/light mode support using shadcn/ui components
 - ⚡ **Background Jobs** - Event-driven async task processing with Inngest
 - 🔒 **Security First** - Argon2 password hashing, HttpOnly cookies, Helmet security headers
@@ -46,7 +46,7 @@ A modern, full-stack MERN application for managing client inquiries and project 
 - **JWT** - Token-based authentication
 - **Argon2** - Password hashing
 - **Passport.js** - Google OAuth strategy
-- **Nodemailer + Mailtrap** - Email delivery
+- **Resend** - Email delivery via official SDK
 - **Inngest** - Background job processing
 - **Helmet** - Security middleware
 
@@ -110,12 +110,9 @@ REFRESH_TOKEN_SECRET=your-refresh-token-secret-here
 CORS_ORIGIN=http://localhost:5173
 FRONTEND_URL=http://localhost:5173
 
-# Email Configuration (Mailtrap)
-EMAIL_FROM=noreply@solvify.com
-SMTP_HOST=sandbox.smtp.mailtrap.io
-SMTP_PORT=587
-SMTP_USER=your-mailtrap-username
-SMTP_PASS=your-mailtrap-password-or-token
+# Email Configuration (Resend)
+EMAIL_FROM=Solvify <onboarding@resend.dev>
+RESEND_API_KEY=re_your-resend-api-key
 
 # Google OAuth
 GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
@@ -319,8 +316,8 @@ Contributions are welcome! Please follow these steps:
 - Ensure `withCredentials: true` is set in frontend API calls
 
 **Email Not Sending:**
-- Verify Mailtrap credentials in `.env`
-- Check SMTP port (587 for TLS, 465 for SSL)
+- Verify `RESEND_API_KEY` in `.env`
+- Verify sender domain in `EMAIL_FROM` (or use `onboarding@resend.dev` for testing)
 - Review server logs for detailed error messages
 
 **Google OAuth Not Working:**
@@ -347,7 +344,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [shadcn/ui](https://ui.shadcn.com/) for beautiful React components
 - [Inngest](https://www.inngest.com/) for reliable background jobs
-- [Mailtrap](https://mailtrap.io/) for email testing and delivery
+- [Resend](https://resend.com/) for reliable transactional email delivery
 
 ---
 

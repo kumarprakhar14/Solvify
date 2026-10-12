@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 interface AuthState {
-  user: null | { id: number; name: string; role: string };
+  user: null | { id?: number | string; _id?: string; name: string; role: string; email?: string };
   accessToken: string | null;
   status: "idle" | "authenticated" | "unauthenticated";
 }
@@ -22,7 +22,7 @@ const authSlice = createSlice({
             state.accessToken = action.payload.accessToken;
         },
         logout: (state) => {
-            state.status = "idle";
+            state.status = "unauthenticated";
             state.user = null;
             state.accessToken = null;
         },

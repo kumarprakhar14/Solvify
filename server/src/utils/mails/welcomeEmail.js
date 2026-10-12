@@ -1,5 +1,3 @@
-import { BsTwitterX } from "react-icons/bs";
-
 export const getWelcomeEmailTemplate = (userName, userEmail) => {
   return `
 <!DOCTYPE html>

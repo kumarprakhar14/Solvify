@@ -18,7 +18,7 @@ Solvify's backend is a **Node.js/Express** application that provides RESTful API
 | **Argon2** | Password hashing |
 | **Passport.js** | Google OAuth authentication |
 | **Inngest** | Background job processing for emails |
-| **Nodemailer + Mailtrap** | Email delivery |
+| **Resend** | Transactional email delivery via Resend Node.js SDK |
 | **Helmet** | Security headers |
 | **CORS** | Cross-origin resource sharing |
 
@@ -45,7 +45,8 @@ server/
 │   │       ├── on-signup.js
 │   │       ├── on-forgot-password.js
 │   │       ├── on-password-change.js
-│   │       └── on-inquiry-submission.js
+│   │       ├── on-inquiry-submission.js
+│   │       └── on-quotation-approved.js
 │   ├── middlewares/
 │   │   ├── deserializeuser.js  # JWT token verification
 │   │   ├── requireAuth.js      # Protected route guard
@@ -58,16 +59,18 @@ server/
 │   │   ├── services.model.js   # Service catalog schema
 │   │   └── counter.model.js    # Auto-increment counter
 │   ├── routes/
-│   │   ├── index.js        # Main router aggregator
-│   │   ├── auth.routes.js  # Authentication endpoints
-│   │   └── user.routes.js  # User-related endpoints
+│   │   ├── index.js             # Main router aggregator
+│   │   ├── auth.routes.js       # Authentication endpoints
+│   │   ├── user.routes.js       # User-related endpoints
+│   │   ├── quotation.routes.js  # Quotation endpoints (/quotations)
+│   │   └── admin.routes.js      # Admin management endpoints (/admin)
 │   ├── services/
 │   │   ├── auth.service.js     # Token generation & verification
 │   │   ├── passport.js         # Google OAuth strategy
 │   │   └── email.service.js    # Email service utilities
 │   └── utils/
 │       ├── crypto.js       # Hashing utilities (Argon2, SHA-256)
-│       ├── mailer.js       # Nodemailer/Mailtrap configuration
+│       ├── mailer.js       # Resend client & sendMail utility
 │       ├── googleClient.js # Google OAuth client
 │       └── mails/          # Email templates
 ├── package.json
@@ -633,11 +636,8 @@ Create a `.env` file based on `.env.example`:
 | `REFRESH_TOKEN_SECRET` | JWT refresh token secret key | Yes |
 | `CORS_ORIGIN` | Allowed CORS origins | Yes |
 | `FRONTEND_URL` | Frontend app URL (for reset links) | Yes |
-| `EMAIL_FROM` | Sender email address | Yes |
-| `SMTP_HOST` | SMTP server host | Yes |
-| `SMTP_PORT` | SMTP server port | Yes |
-| `SMTP_USER` | SMTP username | Yes |
-| `SMTP_PASS` | SMTP password / Mailtrap API token | Yes |
+| `EMAIL_FROM` | Sender email address (e.g. `Solvify <onboarding@resend.dev>`) | Yes |
+| `RESEND_API_KEY` | Resend API key (`re_...`) | Yes |
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID | Yes |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | Yes |
 | `REDIRECT_URL` | Google OAuth redirect URL | Yes |
@@ -650,19 +650,16 @@ Create a `.env` file based on `.env.example`:
 
 ## 9. External Services
 
-### Mailtrap (Email Service)
+### Resend (Email Service)
 
-Used for transactional email delivery.
+Used for transactional email delivery via the official Resend Node.js SDK.
 
 **Configuration:** `src/utils/mailer.js`
 
 ```javascript
-import nodemailer from "nodemailer";
-import { MailtrapTransport } from "mailtrap";
+import { Resend } from "resend";
 
-const transporter = nodemailer.createTransport(
-  MailtrapTransport({ token: process.env.SMTP_PASS })
-);
+const resend = new Resend(process.env.RESEND_API_KEY);
 ```
 
 **Email Categories:**
@@ -670,6 +667,7 @@ const transporter = nodemailer.createTransport(
 - Forgot password emails
 - Password change confirmations
 - Inquiry submission notifications
+- Quotation approved notifications
 
 ### Inngest (Background Jobs)
 
@@ -683,6 +681,7 @@ Event-driven background job processor for async tasks.
 | `user/forgot-password` | Forgot password request | Send reset link email |
 | `user/password-change` | Password reset complete | Send confirmation email |
 | `inquiry/submit` | New inquiry created | Process inquiry, notify admin |
+| `quotation/approved` | Quotation status set to approved | Send approval confirmation email |
 
 **Configuration:** `src/inngest/index.js`
 
@@ -766,7 +765,7 @@ The server handles shutdown signals gracefully:
 - [ ] Configure production MongoDB URI
 - [ ] Set strong, unique JWT secrets
 - [ ] Configure CORS for production domain
-- [ ] Set up Mailtrap production credentials
+- [ ] Set up Resend API key and verify sending domain
 - [ ] Configure Inngest production keys
 - [ ] Enable `secure: true` for cookies (HTTPS)
 - [ ] Set up process manager (PM2, etc.)

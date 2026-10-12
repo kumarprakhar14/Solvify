@@ -20,19 +20,21 @@ export const config = {
     port: requireEnv("PORT", 4000),
     mongoUri: requireEnv("MONGO_URI"),
     accessTokenSecret: requireEnv("ACCESS_TOKEN_SECRET"),
-    refreshTokenSecret: requireEnv("CORS_ORIGIN", "http://localhost:3000"),
+    refreshTokenSecret: requireEnv("REFRESH_TOKEN_SECRET"),
 
     email: {
-        from: requireEnv("EMAIL_FROM"),
-        host: requireEnv("SMTP_HOST"),
-        port: requireEnv("SMTP_PORT"),
-        user: requireEnv("SMTP_USER"),
-        pass: requireEnv("SMTP_PASS"),
+        from: requireEnv("EMAIL_FROM", "Solvify <onboarding@resend.dev>"),
+        apiKey: requireEnv("RESEND_API_KEY", ""),
     },
 
     google: {
         clientId: requireEnv("GOOGLE_CLIENT_ID"),
         clientSecret: requireEnv("GOOGLE_CLIENT_SECRET"),
+        apiKey: requireEnv("GEMINI_API_KEY"),
+    },
+
+    gemini: {
+        apiKey: requireEnv("GEMINI_API_KEY"),
     },
 
     redirectUrl: requireEnv("REDIRECT_URL", "http://localhost:3000"),

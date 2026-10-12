@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { router as authRoutes } from "./auth.routes.js"
-import { router as userRoutes } from "./user.routes.js"
-import { requireAuth } from "../middlewares/requireAuth.js";
+import { router as authRoutes } from "./auth.routes.js";
+import { router as userRoutes } from "./user.routes.js";
+import { router as quotationRoutes } from "./quotation.routes.js";
+import { router as adminRoutes } from "./admin.routes.js";
 
 const router = Router();
 
@@ -10,13 +11,18 @@ router.get("/", (req, res) => {
     res.json({ message: "Welcome to the API 🚀" });
 });
 
-// Public routes
 // Mount auth routes
 router.use("/auth", authRoutes);
 
-// Protected rotues
-// Mount product routes
-
+// Mount user routes
 router.use("/user", userRoutes);
+router.use("/users", userRoutes);
+
+// Mount quotation routes (supports /quotations as expected by frontend and /quotation)
+router.use("/quotations", quotationRoutes);
+router.use("/quotation", quotationRoutes);
+
+// Mount admin routes
+router.use("/admin", adminRoutes);
 
 export { router };

@@ -114,17 +114,28 @@ export const updateQuotation = async (req, res) => {
 
         // Check if status was updated to 'approved'
         if (req.body.status === 'approved') {
-            await inngest.send({
-                name: "quotation/approved",
-                data: {
-                    quotationId: quotation._id,
-                    quotationData: quotation
-                }
-            });
+            if (quotation.inquiryId) {
+                await Inquiry.findByIdAndUpdate(quotation.inquiryId, {
+                    status: 'quotation_sent'
+                });
+            }
+
+            try {
+                await inngest.send({
+                    name: "quotation/approved",
+                    data: {
+                        quotationId: quotation._id,
+                        quotationData: quotation
+                    }
+                });
+            } catch (inngestError) {
+                console.error("Inngest quotation/approved send error (dev server may not be running):", inngestError.message);
+            }
         }
 
         res.status(200).json({ success: true, data: quotation });
     } catch (error) {
-        res.status(500).json({ message: "Failed to update quotation" });
+        console.error("Update quotation error:", error);
+        res.status(500).json({ message: error.message || "Failed to update quotation" });
     }
 };

@@ -1,3 +1,7 @@
+import dns from "dns";
+
+dns.setServers(['8.8.8.8']);
+
 import mongoose from "mongoose";
 import { config } from "../config/env.js";
 

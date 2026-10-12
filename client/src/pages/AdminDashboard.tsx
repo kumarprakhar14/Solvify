@@ -8,9 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Plus, Search, FileText, DollarSign, Clock, CheckCircle2, XCircle, Filter } from "lucide-react";
+import { Loader2, Plus, Search, FileText, DollarSign, Clock, CheckCircle2, XCircle, Filter, BarChart3 } from "lucide-react";
 import AdminNavbar from "@/components/AdminNavbar";
 import AddAdminDialog from "@/components/AddAdminDialog";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
 interface Quotation {
     _id: string;
@@ -20,6 +21,8 @@ interface Quotation {
     subject: string;
     totalAmount: number;
     status: 'draft' | 'pending' | 'approved' | 'sent' | 'rejected';
+    generatedByAi?: boolean;
+    aiError?: string;
     createdAt: string;
 }
 
@@ -107,7 +110,7 @@ const AdminDashboard = () => {
                     </div>
                     <div className="flex gap-3">
                         <AddAdminDialog />
-                        <Button onClick={() => navigate('/quotations/new')} className="shadow-sm">
+                        <Button onClick={() => navigate('/admin/quotations/new')} className="shadow-sm">
                             <Plus className="mr-2 h-4 w-4" /> Create Quotation
                         </Button>
                     </div>
@@ -157,6 +160,47 @@ const AdminDashboard = () => {
                     </Card>
                 </div>
 
+                {/* Quotation Analytics Chart */}
+                <Card className="shadow-sm border-border/60">
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-base font-semibold flex items-center gap-2">
+                            <BarChart3 className="h-5 w-5 text-primary" />
+                            Quotation Pipeline Breakdown
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-2">
+                        <div className="h-[220px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={[
+                                    { name: 'Pending', count: stats.pending, color: '#eab308' },
+                                    { name: 'Approved', count: stats.approved, color: '#22c55e' },
+                                    { name: 'Rejected', count: quotations.filter((q: Quotation) => q.status === 'rejected').length, color: '#ef4444' },
+                                    { name: 'Sent', count: quotations.filter((q: Quotation) => q.status === 'sent').length, color: '#3b82f6' },
+                                ]}>
+                                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                                    <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                                    <Tooltip
+                                        cursor={{ fill: 'transparent' }}
+                                        contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: 'var(--radius)' }}
+                                        labelStyle={{ color: 'hsl(var(--foreground))' }}
+                                    />
+                                    <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                                        {[
+                                            { color: '#eab308' },
+                                            { color: '#22c55e' },
+                                            { color: '#ef4444' },
+                                            { color: '#3b82f6' },
+                                        ].map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </CardContent>
+                </Card>
+
                 {/* Filters & Content */}
                 <div className="space-y-4">
                     <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-card p-4 rounded-lg border shadow-sm">
@@ -204,10 +248,21 @@ const AdminDashboard = () => {
                                                 {quote.quotationId}
                                             </CardDescription>
                                         </div>
-                                        <Badge variant="outline" className={`capitalize flex items-center ${getStatusColor(quote.status)}`}>
-                                            {getStatusIcon(quote.status)}
-                                            {quote.status}
-                                        </Badge>
+                                        <div className="flex flex-col items-end gap-1.5">
+                                            <Badge variant="outline" className={`capitalize flex items-center ${getStatusColor(quote.status)}`}>
+                                                {getStatusIcon(quote.status)}
+                                                {quote.status}
+                                            </Badge>
+                                            {quote.generatedByAi ? (
+                                                <span className="inline-flex items-center text-[10px] font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200">
+                                                    AI Draft
+                                                </span>
+                                            ) : (
+                                                <span className="inline-flex items-center text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200" title={quote.aiError || 'Manual Processing'}>
+                                                    Manual Review
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                 </CardHeader>
                                 <CardContent>

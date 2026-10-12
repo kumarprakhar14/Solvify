@@ -8,11 +8,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2, Save, User } from "lucide-react";
+import { Loader2, Save, User, ArrowLeft } from "lucide-react";
+import { Navigate, useNavigate } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import AdminNavbar from "@/components/AdminNavbar";
 
 const Profile = () => {
-    const { accessToken } = useSelector((state: RootState) => state.auth);
+    const { accessToken, user: currentUser, status } = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const API_BASE_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
 
@@ -82,12 +86,17 @@ const Profile = () => {
         updateProfileMutation.mutate(formData);
     };
 
+    if (status === 'unauthenticated') return <Navigate to="/login" replace />;
     if (isLoading) return <div className="flex justify-center items-center h-screen"><Loader2 className="animate-spin" /></div>;
     if (error) return <div className="text-center text-red-500 pt-20">Error loading profile</div>;
 
     return (
-        <div className="min-h-screen bg-background pt-20 pb-10">
-            <div className="container mx-auto px-4 max-w-2xl">
+        <div className="min-h-screen bg-background flex flex-col">
+            {currentUser?.role === 'admin' ? <AdminNavbar /> : <Navbar />}
+            <div className="container mx-auto px-4 max-w-2xl py-8 flex-1">
+                <Button variant="ghost" size="sm" className="mb-4" onClick={() => navigate(currentUser?.role === 'admin' ? '/admin' : '/')}>
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back to {currentUser?.role === 'admin' ? 'Dashboard' : 'Home'}
+                </Button>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle className="flex items-center gap-2">
